@@ -1,0 +1,51 @@
+<template name="welcomeTemplate">
+    <div id='welcomeTemplateDiv'>
+        <h2>What is the BMEG project?</h2>
+        <p>
+            Cancer is a disease of the genome, caused by disruptions in a person's DNA.
+            Orders of magnitude decreases in price and increases in sequencing throughput enabled sequencing of hundreds of genomes.
+            This will launch a new phase of "Precision Medicine," where molecular markers can guide therapies tailored to patients.
+            The genomics revolution is now systematically characterizing every somatic change in every tumor for large cohorts (>300 patients).
+            Despite some successes, predicting cancer outcomes based on molecular signatures remains a major challenge.
+            The BMEG project aims at obliterating several key roadblocks stymieing progress.
+        </p>
+        <p>
+            First, the raw sequence data is not particularly well-suited for use in developing predictive models.
+            Therefore, gene- and pathway-level evidence will be derived from CGHub to significantly increase the utility of the information for biomedical discovery.
+            The information will be collected in a Social Graph technology framework like Facebook to scale to billions of interconnected objects called the Biomedical Evidence Graph (BMEG).
+        </p>
+        <p>
+            Second, the datasets are so large they are impractical to move around on the internet.
+            Thus, an environment will be created within which researchers can move their code to the vast amounts of data within the BMEG.
+        </p>
+        <p>
+            Third, prediction challenges will be created based on cancer genomics datasets and patient outcomes.
+            While there have been a few successes in predicting outcomes, current approaches suffer from reproducibility and robustness when applied to unseen data.
+            This activity will reach a broad community of algorithm developers, promote transparency and sharing of bioinformatics code, and create a strong network effect to crowd-source the development of the best models for biological discovery.
+            The system constructed will be focused around the investigation of cancer outcomes but the entire pipeline will be of general utility for any number of genome-based projects including investigating any number of disease, stem cell properties, model organisms, and genome-wide association studies.
+            While we are accumulating vast amounts of information on cancer cells, we are still searching in the dark for clues about predicting treatment strategies.
+            It is of paramount importance to accelerate computational discovery.
+        </p>
+        <p>
+            The creation of the BMEG will catalyze community participation to uncover novel relationships to elucidate new fundamental biology on oncogenesis and therapeutic directions for treating this disease.
+        </p>
+        <H2>Use case 1</H2>
+        <p>
+            go from a gene to OD in 2 steps
+            <ol>
+                <li>
+                    Start w/ gene, show signatures it has high weight.
+                </li>
+                <li>
+                    Show the events these signatures predict.
+                </li>
+                <li>
+                    Show samples scoring high in these signatures (with ObservationDeck).
+                </li>
+            </ol>
+        </p>
+        <button>
+            Let's specify a gene (set)!
+        </button>
+    </div>
+</template>

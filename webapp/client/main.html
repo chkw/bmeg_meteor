@@ -1,0 +1,52 @@
+<head>
+    <title>BMEG web portal</title>
+</head>
+
+<body>
+    <a href="https://www.soe.ucsc.edu/"><img src="baskin-logo-banner.gif" alt="baskin-logo-banner" style="height:32px;"></a>
+    <ul class="breadcrumb">
+        {{#breadcrumbItem isActive=true href=(pathFor 'welcome')}} BMEG web portal
+        {{/breadcrumbItem}}
+
+        {{# if (isActiveRoute "root")}}
+        {{#breadcrumbItem isActive=(isActiveRoute "root") href=(pathFor 'welcome')}} welcome
+        {{/breadcrumbItem}}
+        {{/if}}
+
+        {{# if (isActiveRoute "welcome")}}
+        {{#breadcrumbItem isActive=(isActiveRoute "welcome") href=(pathFor 'welcome')}} welcome
+        {{/breadcrumbItem}}
+        {{/if}}
+
+        {{# if (isActiveRoute "gene_sets")}}
+        {{#breadcrumbItem isActive=(isActiveRoute "welcome") href=(pathFor 'welcome')}} welcome
+        {{/breadcrumbItem}}
+
+        {{#breadcrumbItem isActive=(isActiveRoute "gene_sets") href=(pathFor 'gene_sets')}} gene sets
+        {{/breadcrumbItem}}
+        {{/if}}
+
+        {{# if (isActiveRoute "obs_deck")}}
+        {{#breadcrumbItem isActive=(isActiveRoute "welcome") href=(pathFor 'welcome')}} welcome
+        {{/breadcrumbItem}}
+
+        {{#breadcrumbItem isActive=(isActiveRoute "gene_sets") href=(pathFor 'gene_sets')}} gene sets
+        {{/breadcrumbItem}}
+
+        {{#breadcrumbItem isActive=(isActiveRoute "obs_deck") href=(pathFor 'obs_deck')}} observation deck
+        {{/breadcrumbItem}}
+        {{/if}}
+    </ul>
+</body>
+
+<template name="breadcrumbItem">
+    {{#if isActive}}
+    <li>
+        {{> UI.contentBlock}}
+    </li>
+    {{else}}
+    <li>
+        <a href={{href}}> {{> UI.contentBlock}} </a>
+    </li>
+    {{/if}}
+</template>
