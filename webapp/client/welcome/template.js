@@ -1,9 +1,11 @@
 import { Session
 }from'meteor/session';
 
-Template.welcomeTemplate.events({'click button'(event, instance) {
-    FlowRouter.go("gene_sets");
-}});
+Template.welcomeTemplate.events({
+    'click button#gene_set' : function(event, instance) {
+        FlowRouter.go("gene_sets");
+    }
+});
 
 Template.welcomeTemplate.helpers({});
 

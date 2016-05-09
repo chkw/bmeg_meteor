@@ -4,6 +4,7 @@
 
 <body>
     <a href="https://www.soe.ucsc.edu/"><img src="baskin-logo-banner.gif" alt="baskin-logo-banner" style="height:32px;"></a>
+    <a href="https://www.ohsu.edu/"><img src="ohsu_logo_400x400.jpg" alt="ohsu-logo-banner" style="height:32px;"></a>
     <ul class="breadcrumb">
         {{#breadcrumbItem isActive=true href=(pathFor 'welcome')}} BMEG web portal
         {{/breadcrumbItem}}
@@ -26,11 +27,25 @@
         {{/breadcrumbItem}}
         {{/if}}
 
+        {{# if (isActiveRoute "sig_select")}}
+        {{#breadcrumbItem isActive=(isActiveRoute "welcome") href=(pathFor 'welcome')}} welcome
+        {{/breadcrumbItem}}
+
+        {{#breadcrumbItem isActive=(isActiveRoute "gene_sets") href=(pathFor 'gene_sets')}} gene sets
+        {{/breadcrumbItem}}
+
+        {{#breadcrumbItem isActive=(isActiveRoute "sig_select") href=(pathFor 'sig_select')}} select signatures
+        {{/breadcrumbItem}}
+        {{/if}}
+
         {{# if (isActiveRoute "obs_deck")}}
         {{#breadcrumbItem isActive=(isActiveRoute "welcome") href=(pathFor 'welcome')}} welcome
         {{/breadcrumbItem}}
 
         {{#breadcrumbItem isActive=(isActiveRoute "gene_sets") href=(pathFor 'gene_sets')}} gene sets
+        {{/breadcrumbItem}}
+
+        {{#breadcrumbItem isActive=(isActiveRoute "sig_select") href=(pathFor 'sig_select')}} select signatures
         {{/breadcrumbItem}}
 
         {{#breadcrumbItem isActive=(isActiveRoute "obs_deck") href=(pathFor 'obs_deck')}} observation deck

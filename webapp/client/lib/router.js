@@ -50,6 +50,16 @@ FlowRouter.route('/sample_sets', {
     }
 });
 
+FlowRouter.route('/sig_select', {
+	name:"sig_select",
+    action : function(params, queryParams) {
+        console.log("routing for sig_select");
+        console.log("params", params);
+        console.log("queryParams", queryParams);
+        BlazeLayout.render("sigSelectTemplate");
+    }
+});
+
 FlowRouter.route('/obs_deck', {
 	name:"obs_deck",
     action : function(params, queryParams) {
