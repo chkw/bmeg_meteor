@@ -14,7 +14,10 @@ Template.obsDeckTemplate.onCreated(function() {
 Template.obsDeckTemplate.onRendered(function() {
     console.log("Template.obsDeckTemplate.rendered");
 
-    var divElem = document.getElementById("obsDeckTemplateDiv");
+    var divElem = document.getElementById("obsDeckDiv");
+
+    // start throbber
+    document.getElementById("throbberImg").style.display = "inline";
 
     // callback for getting data
     var buildObsDeckWithData = function(error, result) {
@@ -29,6 +32,9 @@ Template.obsDeckTemplate.onRendered(function() {
             };
 
             observation_deck.buildObservationDeck(divElem, od_config);
+
+            // stop throbber
+            document.getElementById("throbberImg").style.display = "none";
 
         } else {// remove child elements of divElem
             while (divElem.firstChild) {

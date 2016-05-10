@@ -29,6 +29,9 @@ Template.sigSelectTemplate.onCreated(function() {
 Template.sigSelectTemplate.onRendered(function() {
     console.log("Template.sigSelectTemplate.onRendered");
 
+    // start throbber
+    document.getElementById("throbberImg").style.display = "inline";
+
     var geneList = Session.get("geneList");
     console.log("geneList", geneList);
 
@@ -44,6 +47,8 @@ Template.sigSelectTemplate.onRendered(function() {
         } else {
             console.log("request failed!");
         }
+        // stop throbber
+        document.getElementById("throbberImg").style.display = "none";
     };
 
     // get data via the Meteor.method
