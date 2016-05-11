@@ -35,7 +35,7 @@ Template.sigSelectTemplate.onRendered(function() {
     var geneList = Session.get("geneList");
     console.log("geneList", geneList);
 
-	// update query info
+    // update query info
     document.getElementById("queryP").innerHTML = "getting signatures that are highly weighted in these genes: " + geneList;
 
     var show_signature_results = function(error, result) {
@@ -48,7 +48,7 @@ Template.sigSelectTemplate.onRendered(function() {
             displaySignatures(data);
 
         } else {
-            console.log("request failed!");
+            alert("request failed!");
         }
         // stop throbber
         document.getElementById("throbberImg").style.display = "none";

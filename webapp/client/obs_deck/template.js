@@ -33,15 +33,16 @@ Template.obsDeckTemplate.onRendered(function() {
 
             observation_deck.buildObservationDeck(divElem, od_config);
 
-            // stop throbber
-            document.getElementById("throbberImg").style.display = "none";
-
         } else {// remove child elements of divElem
             while (divElem.firstChild) {
                 divElem.removeChild(divElem.firstChild);
             }
             divElem.innerHTML = 'no data';
+            alert("request failed!");
         }
+
+        // stop throbber
+        document.getElementById("throbberImg").style.display = "none";
     };
 
     var selectedSigs = Session.get("selectedSigs");
