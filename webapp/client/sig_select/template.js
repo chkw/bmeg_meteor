@@ -56,6 +56,7 @@ Template.sigSelectTemplate.onRendered(function() {
 
     // get data via the Meteor.method
     Meteor.call("get_hard_coded_sigs", geneList, show_signature_results);
+    // Meteor.call("get_sigs_for_genes", geneList, show_signature_results);
 });
 
 Template.sigSelectTemplate.onDestroyed(function() {

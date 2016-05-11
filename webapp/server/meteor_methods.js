@@ -1,6 +1,7 @@
 Meteor.methods({
     test_get : function(arg1) {
-        console.log("in method test_get", "query:", arg1);
+        var s = "method:method test_get";
+        console.log(s, "query:", arg1);
 
         this.unblock();
 
@@ -10,7 +11,7 @@ Meteor.methods({
             var response = HTTP.call("GET", arg1);
         } catch (error) {
             // console.log("error name:", error.name);
-            console.log("error message:", error.message);
+            console.log(s, "error message:", error.message);
             success = false;
         }
 
@@ -26,12 +27,13 @@ Meteor.methods({
     },
 
     test : function() {
-        console.log("in method test");
+        console.log("method:test");
     },
 
     get_hard_coded_data : function(sigNames) {
         // data hard-coded into test_data.js
-        console.log("in method get_hard_coded_data", sigNames);
+        var s = "method:method get_hard_coded_data";
+        console.log(s, sigNames);
         if (_.isUndefined(sigNames) || _.isNull(sigNames) || sigNames.length < 1) {
             return {
                 success : false,
@@ -48,7 +50,8 @@ Meteor.methods({
 
     get_hard_coded_sigs : function(geneList) {
         // data hard-coded into test_data.js
-        console.log("in get_hard_coded_sigs", geneList);
+        var s = "method:get_hard_coded_sigs";
+        console.log(s, geneList);
         if (_.isUndefined(geneList) || _.isNull(geneList) || geneList.length < 1) {
             return {
                 success : false,
@@ -61,5 +64,73 @@ Meteor.methods({
             query : geneList,
             data : sigsData
         };
-    }
+    },
+
+    get_sigs_for_genes : function(geneList) {
+        var s = "method:get_sigs_for_genes";
+        console.log(s, geneList);
+        if (_.isUndefined(geneList) || _.isNull(geneList) || geneList.length < 1) {
+            return {
+                success : false,
+                query : geneList
+            };
+        }
+
+        this.unblock();
+
+        // TODO api has yet to be released
+        var serviceUrl = "https://bmegqueryservice";
+        var response;
+        try {
+            response = HTTP.call("GET", serviceUrl);
+        } catch (error) {
+            console.log(s, "HTTP.call error message:", error.message);
+            success = false;
+            return {
+                success : false,
+                query : geneList
+            };
+        }
+
+        var sigsData = response;
+        return {
+            success : true,
+            query : geneList,
+            data : sigsData
+        };
+    },
+
+    get_obs_deck_data_for_sigList : function(sigNames) {
+        var s = "method:method get_obs_deck_data_for_sigList";
+        console.log(s, sigNames);
+        if (_.isUndefined(sigNames) || _.isNull(sigNames) || sigNames.length < 1) {
+            return {
+                success : false,
+                query : sigNames
+            };
+        }
+
+        this.unblock();
+
+        // TODO api has yet to be released
+        var serviceUrl = "https://bmegqueryservice";
+        var response;
+        try {
+            response = HTTP.call("GET", serviceUrl);
+        } catch (error) {
+            console.log(s, "HTTP.call error message:", error.message);
+            success = false;
+            return {
+                success : false,
+                query : sigNames
+            };
+        }
+
+        var obsDeckData = response;
+        return {
+            success : true,
+            query : sigNames,
+            data : obsDeckData
+        };
+    },
 });

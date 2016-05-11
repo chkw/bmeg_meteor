@@ -53,5 +53,6 @@ Template.obsDeckTemplate.onRendered(function() {
 
     // get data via the Meteor.method
     Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
+    // Meteor.call("get_obs_deck_data_for_sigList", selectedSigs, buildObsDeckWithData);
 
 });
