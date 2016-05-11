@@ -16,7 +16,7 @@ Template.geneSetsTemplate.events({
         var splitRegExp = new RegExp(/\b/);
         _.each(geneSetString.split(splitRegExp), function(string) {
             var geneString = string.trim();
-            if (geneString !== "") {
+            if (geneString !== "" && geneString != ",") {
                 geneSet.add(geneString);
             }
         });
