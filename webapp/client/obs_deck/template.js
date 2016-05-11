@@ -47,6 +47,9 @@ Template.obsDeckTemplate.onRendered(function() {
     var selectedSigs = Session.get("selectedSigs");
     console.log("selectedSigs", selectedSigs);
 
+    // update query info
+    document.getElementById("queryP").innerHTML = "getting Observation Deck data for these signatures: " + selectedSigs;
+
     // get data via the Meteor.method
     Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
 

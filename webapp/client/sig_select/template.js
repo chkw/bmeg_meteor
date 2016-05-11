@@ -35,6 +35,9 @@ Template.sigSelectTemplate.onRendered(function() {
     var geneList = Session.get("geneList");
     console.log("geneList", geneList);
 
+	// update query info
+    document.getElementById("queryP").innerHTML = "getting signatures that are highly weighted in these genes: " + geneList;
+
     var show_signature_results = function(error, result) {
         console.log("result", result);
 
