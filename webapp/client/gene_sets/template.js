@@ -12,7 +12,16 @@ Template.geneSetsTemplate.events({
             return;
         }
 
-        var geneList = geneSetString.split("\t");
+        var geneSet = new Set();
+        var splitRegExp = new RegExp(/\b/);
+        _.each(geneSetString.split(splitRegExp), function(string) {
+            var geneString = string.trim();
+            if (geneString !== "") {
+                geneSet.add(geneString);
+            }
+        });
+
+        var geneList = Array.from(geneSet);
 
         Session.set("geneList", geneList);
 
