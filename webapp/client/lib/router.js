@@ -1,7 +1,7 @@
 // use the meteor package, kadira:flow-router, for routing
 
 FlowRouter.route('/', {
-	name:"root",
+    name : "root",
     action : function(params, queryParams) {
         console.log("routing for '/'");
         console.log("params", params);
@@ -11,7 +11,7 @@ FlowRouter.route('/', {
 });
 
 FlowRouter.route('/hello', {
-	name:"hello",
+    name : "hello",
     action : function(params, queryParams) {
         console.log("routing for '/'");
         console.log("params", params);
@@ -21,7 +21,7 @@ FlowRouter.route('/hello', {
 });
 
 FlowRouter.route('/welcome', {
-	name:"welcome",
+    name : "welcome",
     action : function(params, queryParams) {
         console.log("routing for welcome");
         console.log("params", params);
@@ -31,7 +31,7 @@ FlowRouter.route('/welcome', {
 });
 
 FlowRouter.route('/gene_sets', {
-	name:"gene_sets",
+    name : "gene_sets",
     action : function(params, queryParams) {
         console.log("routing for gene_sets");
         console.log("params", params);
@@ -41,7 +41,7 @@ FlowRouter.route('/gene_sets', {
 });
 
 FlowRouter.route('/sample_sets', {
-	name:"sample_sets",
+    name : "sample_sets",
     action : function(params, queryParams) {
         console.log("routing for sample_sets");
         console.log("params", params);
@@ -51,7 +51,7 @@ FlowRouter.route('/sample_sets', {
 });
 
 FlowRouter.route('/sig_select', {
-	name:"sig_select",
+    name : "sig_select",
     action : function(params, queryParams) {
         console.log("routing for sig_select");
         console.log("params", params);
@@ -61,7 +61,7 @@ FlowRouter.route('/sig_select', {
 });
 
 FlowRouter.route('/obs_deck', {
-	name:"obs_deck",
+    name : "obs_deck",
     action : function(params, queryParams) {
         console.log("routing for sample_sets");
         console.log("params", params);
@@ -71,9 +71,19 @@ FlowRouter.route('/obs_deck', {
 });
 
 FlowRouter.notFound = {
-	name:"notFound",
+    name : "notFound",
     action : function() {
         console.log("route not found");
         BlazeLayout.render("badRouteTemplate");
     }
 };
+
+FlowRouter.route('/test', {
+    name : "test",
+    action : function(params, queryParams) {
+        console.log("routing for '/test'");
+        console.log("params", params);
+        console.log("queryParams", queryParams);
+        BlazeLayout.render("testTemplate");
+    }
+});
