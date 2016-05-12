@@ -1,37 +1,86 @@
 import { Session
 }from'meteor/session';
 
+var getTextBoxValue = function(elemId) {
+    var textBoxElem = document.getElementById(elemId);
+    var textBoxVal = textBoxElem.value;
+    return textBoxVal;
+};
+
+var getListFromString = function(inputString) {
+    var stringSet = new Set();
+    var splitRegExp = new RegExp(/\b/);
+    _.each(inputString.split(splitRegExp), function(string) {
+        var trimmedString = string.trim();
+        if (trimmedString !== "" && trimmedString != ",") {
+            stringSet.add(trimmedString);
+        }
+    });
+
+    var stringList = Array.from(stringSet);
+    return stringList;
+};
+
+var appendResponse = function(meteorCallResult) {
+    var divElem = document.getElementById("testTemplateDiv");
+    var pElem = document.createElement("p");
+    if (!_.isUndefined(meteorCallResult.data)) {
+        pElem.innerHTML = meteorCallResult.data.content;
+    } else {
+        pElem.innerHTML = meteorCallResult.response.content;
+    }
+    divElem.appendChild(pElem);
+};
+
 Template.testTemplate.events({
     'click button#go_test' : function(event, instance) {
 
-        var geneSetTextBoxElem = document.getElementById("testTextBox");
-        var geneSetString = geneSetTextBoxElem.value;
+        var geneSetString = getTextBoxValue("testTextBox");
 
         if (geneSetString === "") {
-            window.alert("Please type in some genes symbols.");
+            window.alert("Please type in some text.");
             return;
         }
 
-        var geneSet = new Set();
-        var splitRegExp = new RegExp(/\b/);
-        _.each(geneSetString.split(splitRegExp), function(string) {
-            var geneString = string.trim();
-            if (geneString !== "" && geneString != ",") {
-                geneSet.add(geneString);
-            }
-        });
-
-        var geneList = Array.from(geneSet);
+        var geneList = getListFromString(geneSetString);
 
         Meteor.call("test_post", {
-            testList : geneList
+            testList : JSON.stringify(geneList)
         }, function(error, result) {
             console.log("test_post result", result);
+            appendResponse(result);
+        });
+    },
+    'click button#go_post_sigs_for_genes' : function(event, instance) {
 
-            var divElem = document.getElementById("testTemplateDiv");
-            var pElem = document.createElement("p");
-            pElem.innerHTML = result.response.content;
-            divElem.appendChild(pElem);
+        var geneSetString = getTextBoxValue("testTextBox");
+
+        if (geneSetString === "") {
+            window.alert("Please type in some text.");
+            return;
+        }
+
+        var geneList = getListFromString(geneSetString);
+
+        Meteor.call("post_sigs_for_genes", geneList, function(error, result) {
+            console.log("post_sigs_for_genes result", result);
+            appendResponse(result);
+        });
+    },
+    'click button#go_post_obs_deck_data_for_sigList' : function(event, instance) {
+
+        var sigNamesString = getTextBoxValue("testTextBox");
+
+        if (sigNamesString === "") {
+            window.alert("Please type in some text.");
+            return;
+        }
+
+        var sigNames = getListFromString(sigNamesString);
+
+        Meteor.call("post_obs_deck_data_for_sigList", sigNames, function(error, result) {
+            console.log("post_obs_deck_data_for_sigList result", result);
+            appendResponse(result);
         });
     }
 });
