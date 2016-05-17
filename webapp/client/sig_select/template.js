@@ -73,8 +73,13 @@ var displaySignatures = function(sigData) {
         divElem.removeChild(divElem.firstChild);
     }
 
+	// sort signatures by query score
+    var sortedSigData = _.sortBy(sigData, function(sigObj) {
+        return -1 * sigObj["score"];
+    });
+
     //  add results to div
-    _.each(sigData, function(sigObj) {
+    _.each(sortedSigData, function(sigObj) {
         var sigDiv = document.createElement("div");
         sigDiv.setAttribute("id", "sigDiv");
         sigDiv.setAttribute("title", sigObj.name);
