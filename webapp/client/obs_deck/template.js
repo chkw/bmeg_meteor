@@ -48,11 +48,14 @@ Template.obsDeckTemplate.onRendered(function() {
     var selectedSigs = Session.get("selectedSigs");
     console.log("selectedSigs", selectedSigs);
 
+    var sessionGeneList = Session.get("geneList");
+    console.log("sessionGeneList", sessionGeneList);
+
     // update query info
     document.getElementById("queryP").innerHTML = "getting Observation Deck data for these signatures: " + selectedSigs;
 
     // get data via the Meteor.method
     Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
-    // Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, buildObsDeckWithData);
+    // Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["tissue_type"], buildObsDeckWithData);
 
 });

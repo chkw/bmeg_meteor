@@ -15,7 +15,7 @@ Meteor.methods({
         try {
             var response = HTTP.call("GET", arg1);
         } catch (error) {
-            console.log(s, "error message:", error.message);
+            console.log(chalk.red.bold(s), "error message:", error.message);
             success = false;
         }
 
@@ -43,7 +43,7 @@ Meteor.methods({
                 params : postVars
             });
         } catch (error) {
-            console.log(s, "HTTP.call error message:", error.message);
+            console.log(chalk.red.bold(s), "HTTP.call error message:", error.message);
             return {
                 success : false,
                 postVars : postVars
@@ -115,7 +115,7 @@ Meteor.methods({
                 }
             });
         } catch (error) {
-            console.log(s, "HTTP.call error message:", error.message);
+            console.log(chalk.red.bold(s), "HTTP.call error message:", error.message);
             success = false;
             return {
                 success : false,
@@ -131,13 +131,14 @@ Meteor.methods({
         };
     },
 
-    post_obs_deck_data_for_sigList : function(sigNames) {
+    post_obs_deck_data_for_sigList : function(sigNames, geneList, clinicalEvents) {
         var s = "method:post_obs_deck_data_for_sigList";
         console.log(s, sigNames);
+
         if (_.isUndefined(sigNames) || _.isNull(sigNames) || sigNames.length < 1) {
             return {
                 success : false,
-                query : sigNames
+                query : [sigNames, geneList, clinicalEvents]
             };
         }
 
@@ -149,6 +150,22 @@ Meteor.methods({
             });
         });
 
+        var expressionMetadataList = [];
+        _.each(geneList, function(geneName) {
+            expressionMetadataList.push({
+                eventID : geneName,
+                datatype : "expression"
+            });
+        });
+
+        var clinicalMetadataList = [];
+        _.each(clinicalEvents, function(eventName) {
+            clinicalMetadataList.push({
+                eventID : eventName,
+                datatype : "clinical"
+            });
+        });
+
         this.unblock();
 
         // TODO api has yet to be released
@@ -157,21 +174,23 @@ Meteor.methods({
         try {
             response = HTTP.call("POST", serviceUrl, {
                 params : {
-                    signatureMetadata : JSON.stringify(signatureMetadataList)
+                    signatureMetadata : JSON.stringify(signatureMetadataList),
+                    expressionMetadataList : JSON.stringify(expressionMetadataList),
+                    clinicalEventMetadata : JSON.stringify(clinicalMetadataList)
                 }
             });
         } catch (error) {
-            console.log(s, "HTTP.call error message:", error.message);
+            console.log(chalk.red.bold(s), "HTTP.call error message:", error.message);
             return {
                 success : false,
-                query : sigNames
+                query : [sigNames, geneList, clinicalEvents]
             };
         }
 
         var obsDeckData = response;
         return {
             success : true,
-            query : sigNames,
+            query : [sigNames, geneList, clinicalEvents],
             data : obsDeckData
         };
     }
