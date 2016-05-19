@@ -1,19 +1,92 @@
 import { Session
 }from'meteor/session';
 
-Template.sigSelectTemplate.events({
-    'click button#go_obs_deck' : function(event, instance) {
+var renderSigResultsDataTable = function(dataObjs) {
+
+    var columnObjs = [];
+    var colNameSet = new Set();
+    _.each(dataObjs, function(dataObj) {
+        var keys = _.keys(dataObj);
+        _.each(keys, function(key) {
+            colNameSet.add(key);
+        });
+    });
+
+    _.each(Array.from(colNameSet), function(colName) {
+        columnObjs.push({
+            data : colName,
+            title : colName.toUpperCase(),
+        });
+    });
+
+    // console.log("colNameSet", colNameSet);
+    // console.log("columnObjs", columnObjs);
+
+    var sigResultsDataTableObj = $('#sigResultsTable').DataTable({
+        // supposed to make this object retrievable by ID
+        bRetrieve : true,
+        // turn on select extension
+        select : true,
+        data : dataObjs,
+        columns : columnObjs
+    });
+
+    // set selected sigs rows
+    var selectedSigs = Session.get("selectedSigs");
+
+    if (!_.isUndefined(selectedSigs) && !_.isNull(selectedSigs) && selectedSigs.length > 0) {
+        sigResultsDataTableObj.rows().every(function(rowIdx, tableLoop, rowLoop) {
+            var data = this.data();
+            if (_.contains(selectedSigs, data["name"])) {
+                this.select();
+            }
+        });
+    }
+
+    var setSelectedSigsSession = function() {
+        var selectedData = sigResultsDataTableObj.rows({
+            selected : true
+        }).data().pluck('name');
 
         var selectedSigs = [];
-        var checkBoxElems = document.querySelectorAll("div input[name=signatures]:checked");
-        _.each(checkBoxElems, function(checkBoxElem) {
-            var value = checkBoxElem.value;
-            selectedSigs.push(value);
+        _.each(selectedData, function(sigName) {
+            selectedSigs.push(sigName);
         });
 
         Session.set("selectedSigs", selectedSigs);
+    };
 
-        FlowRouter.go("obs_deck");
+    // event handling for (de)select events
+    // https://datatables.net/reference/event/select
+    // https://datatables.net/reference/event/deselect
+    // ... update a session variable, selectedSigs
+
+    sigResultsDataTableObj.on('select', function(e, dt, type, indexes) {
+        if (type === 'row') {
+            setSelectedSigsSession();
+        }
+    });
+
+    sigResultsDataTableObj.on('deselect', function(e, dt, type, indexes) {
+        if (type === 'row') {
+            setSelectedSigsSession();
+        }
+    });
+
+    return sigResultsDataTableObj;
+};
+
+Template.sigSelectTemplate.events({
+    'click button#go_obs_deck' : function(event, instance) {
+        var selectedSigs = Session.get("selectedSigs");
+        console.log("click button#go_obs_deck", "selectedSigs", selectedSigs);
+
+        if (_.isUndefined(selectedSigs) || _.isNull(selectedSigs) || selectedSigs.length < 1) {
+            alert("No signatures have been selected!");
+        } else {
+            FlowRouter.go("obs_deck");
+        }
+
     }
 });
 
@@ -66,33 +139,9 @@ Template.sigSelectTemplate.onDestroyed(function() {
 var displaySignatures = function(sigData) {
     console.log("sigData", sigData);
 
-    var divElem = document.getElementById("sigResultsDiv");
-
-    // remove child elements of divElem
-    while (divElem.firstChild) {
-        divElem.removeChild(divElem.firstChild);
-    }
-
-	// sort signatures by query score
-    var sortedSigData = _.sortBy(sigData, function(sigObj) {
-        return -1 * sigObj["score"];
+    jQuery.getScript("dataTables/datatables.min.js", function() {
+        console.log("loaded datatables.min.js");
+        var sigResultsDataTableObj = renderSigResultsDataTable(sigData);
     });
 
-    //  add results to div
-    _.each(sortedSigData, function(sigObj) {
-        var sigDiv = document.createElement("div");
-        sigDiv.setAttribute("id", "sigDiv");
-        sigDiv.setAttribute("title", sigObj.name);
-        divElem.appendChild(sigDiv);
-
-        var checkBoxElem = document.createElement("input");
-        checkBoxElem.setAttribute("type", "checkbox");
-        checkBoxElem.setAttribute("name", "signatures");
-        checkBoxElem.setAttribute("value", sigObj.name);
-        checkBoxElem.setAttribute("title", sigObj.name);
-        checkBoxElem.setAttribute("checked", true);
-        sigDiv.appendChild(checkBoxElem);
-
-        sigDiv.innerHTML = sigDiv.innerHTML + sigObj.score + ": " + sigObj.name;
-    });
 };

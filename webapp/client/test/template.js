@@ -511,8 +511,8 @@ Template.testTemplate.helpers({});
 Template.testTemplate.onCreated(function() {
     console.log("Template.testTemplate.onCreated");
 
-    jQuery.getScript("dataTables/jquery.dataTables.min.js", function() {
-        console.log("loaded jquery.dataTables.min.js");
+    jQuery.getScript("dataTables/datatables.min.js", function() {
+        console.log("loaded datatables.min.js");
         renderDataTable();
     });
 
