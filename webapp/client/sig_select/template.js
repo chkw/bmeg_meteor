@@ -1,6 +1,18 @@
 import { Session
 }from'meteor/session';
 
+var validateInput = function(inputSigs) {
+
+    if (_.isUndefined(inputSigs) || _.isNull(inputSigs)) {
+        return false;
+    }
+
+    if (inputSigs.length < 1) {
+        return false;
+    }
+    return true;
+};
+
 var renderSigResultsDataTable = function(dataObjs) {
 
     var columnObjs = [];
@@ -89,10 +101,10 @@ Template.sigSelectTemplate.events({
         var selectedSigs = Session.get("selectedSigs");
         console.log("click button#go_obs_deck", "selectedSigs", selectedSigs);
 
-        if (_.isUndefined(selectedSigs) || _.isNull(selectedSigs) || selectedSigs.length < 1) {
-            alert("No signatures have been selected!");
-        } else {
+        if (validateInput(selectedSigs)) {
             FlowRouter.go("obs_deck");
+        } else {
+            alert("Please select at least one row.");
         }
 
     }

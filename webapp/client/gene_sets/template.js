@@ -1,13 +1,27 @@
 import { Session
 }from'meteor/session';
 
+var validateInput = function(inputString) {
+    inputString = inputString.trim();
+
+    if (_.isUndefined(inputString) || _.isNull(inputString)) {
+        return false;
+    }
+
+    if (inputString === "") {
+        return false;
+    }
+
+    return true;
+};
+
 Template.geneSetsTemplate.events({
     'click button#go_select_sigs' : function(event, instance) {
 
         var geneSetTextBoxElem = document.getElementById("geneSetTextBox");
         var geneSetString = geneSetTextBoxElem.value;
 
-        if (geneSetString === "") {
+        if (! validateInput(geneSetString)) {
             window.alert("Please type in some genes symbols.");
             return;
         }
