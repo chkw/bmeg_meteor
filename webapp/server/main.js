@@ -3,5 +3,5 @@ import { Meteor
 
 Meteor.startup(() => {
     // code to run on server at startup
-    console.log("Meteor.startup");
+    console.log(chalk.green("Meteor.startup"));
 });
