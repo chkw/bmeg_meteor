@@ -22,13 +22,21 @@ var renderSigResultsDataTable = function(dataObjs) {
     // console.log("colNameSet", colNameSet);
     // console.log("columnObjs", columnObjs);
 
+    // default column to sort
+    var sortColIndex = _.pluck(columnObjs, "data").indexOf("score");
+    var orderObj;
+    if (sortColIndex) {
+        orderObj = [[sortColIndex, "desc"]];
+    }
+
     var sigResultsDataTableObj = $('#sigResultsTable').DataTable({
         // supposed to make this object retrievable by ID
         bRetrieve : true,
         // turn on select extension
         select : true,
         data : dataObjs,
-        columns : columnObjs
+        columns : columnObjs,
+        order : orderObj
     });
 
     // set selected sigs rows
