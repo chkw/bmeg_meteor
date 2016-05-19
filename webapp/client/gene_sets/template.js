@@ -25,6 +25,12 @@ Template.geneSetsTemplate.events({
 
         Session.set("geneList", geneList);
 
+        // clear the value so if same sig gets presented, it is not pre-selected
+        Session.set("selectedSigs", undefined);
+
+        // delete the key
+        delete Session.keys["selectedSigs"];
+
         FlowRouter.go("sig_select");
     }
 });
