@@ -1,7 +1,29 @@
+var bmeg_query_service_url = "http://bmeg.io";
+
 Meteor.methods({
 
     test : function() {
         console.log("method:test");
+    },
+
+    test_bmeg : function() {
+        var s = "method:test_bmeg";
+        this.unblock();
+        var success = true;
+        try {
+            var response = HTTP.call("GET", bmeg_query_service_url);
+        } catch (error) {
+            console.log(chalk.red.bold(s), "error message:", error.message);
+            success = false;
+        }
+        var returnObj = {
+            success : success
+        };
+        if (success) {
+            returnObj["response"] = response;
+        }
+        console.log(chalk.green.bold(s), returnObj);
+        return returnObj;
     },
 
     test_get : function(arg1) {
@@ -29,7 +51,6 @@ Meteor.methods({
 
         return returnObj;
     },
-
     test_post : function(postVars) {
         var s = "method:test_post";
         console.log(s, postVars);
@@ -56,7 +77,6 @@ Meteor.methods({
             response : response
         };
     },
-
     get_hard_coded_data : function(sigNames) {
         // data hard-coded into test_data.js
         var s = "method:get_hard_coded_data";
@@ -74,7 +94,6 @@ Meteor.methods({
             data : exampleData["mongoData"]
         };
     },
-
     get_hard_coded_sigs : function(geneList) {
         // data hard-coded into test_data.js
         var s = "method:get_hard_coded_sigs";
@@ -92,7 +111,6 @@ Meteor.methods({
             data : sigsData
         };
     },
-
     post_sigs_for_genes : function(geneList) {
         var s = "method:post_sigs_for_genes";
         console.log(s, geneList);
@@ -106,7 +124,7 @@ Meteor.methods({
         this.unblock();
 
         // TODO api has yet to be released
-        var serviceUrl = "https://posttestserver.com/post.php";
+        var serviceUrl = bmeg_query_service_url;
         var response;
         try {
             response = HTTP.call("POST", serviceUrl, {
@@ -130,7 +148,6 @@ Meteor.methods({
             data : sigsData
         };
     },
-
     post_obs_deck_data_for_sigList : function(sigNames, geneList, clinicalEvents) {
         var s = "method:post_obs_deck_data_for_sigList";
         console.log(s, sigNames);
@@ -169,13 +186,13 @@ Meteor.methods({
         this.unblock();
 
         // TODO api has yet to be released
-        var serviceUrl = "https://posttestserver.com/post.php";
+        var serviceUrl = bmeg_query_service_url;
         var response;
         try {
             response = HTTP.call("POST", serviceUrl, {
                 params : {
                     signatureMetadata : JSON.stringify(signatureMetadataList),
-                    expressionMetadataList : JSON.stringify(expressionMetadataList),
+                    expressionMetadata : JSON.stringify(expressionMetadataList),
                     clinicalEventMetadata : JSON.stringify(clinicalMetadataList)
                 }
             });

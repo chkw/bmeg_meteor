@@ -500,6 +500,12 @@ Template.testTemplate.events({
             console.log("post_obs_deck_data_for_sigList result", result);
             appendResponse(result);
         });
+    },
+    'click button#go_test_bmeg' : function(event, instance) {
+        Meteor.call("test_bmeg", function(error, result) {
+            console.log("test_bmeg result", result);
+            appendResponse(result);
+        });
     }
 });
 
