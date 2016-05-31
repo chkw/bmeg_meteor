@@ -3,7 +3,7 @@
 FlowRouter.route('/', {
     name : "root",
     action : function(params, queryParams) {
-        console.log("routing for '/'");
+        console.log("routing for root");
         console.log("params", params);
         console.log("queryParams", queryParams);
         BlazeLayout.render("welcomeTemplate");
@@ -13,7 +13,7 @@ FlowRouter.route('/', {
 FlowRouter.route('/hello', {
     name : "hello",
     action : function(params, queryParams) {
-        console.log("routing for '/'");
+        console.log("routing for hello");
         console.log("params", params);
         console.log("queryParams", queryParams);
         BlazeLayout.render("helloTemplate");
@@ -63,7 +63,7 @@ FlowRouter.route('/sig_select', {
 FlowRouter.route('/obs_deck', {
     name : "obs_deck",
     action : function(params, queryParams) {
-        console.log("routing for sample_sets");
+        console.log("routing for obs_deck");
         console.log("params", params);
         console.log("queryParams", queryParams);
         BlazeLayout.render("obsDeckTemplate");
@@ -81,7 +81,7 @@ FlowRouter.notFound = {
 FlowRouter.route('/test', {
     name : "test",
     action : function(params, queryParams) {
-        console.log("routing for '/test'");
+        console.log("routing for 'test'");
         console.log("params", params);
         console.log("queryParams", queryParams);
         BlazeLayout.render("testTemplate");
