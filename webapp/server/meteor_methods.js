@@ -1,4 +1,5 @@
 var bmeg_query_service_url = "http://bmeg.io";
+var post_test_service_url = "https://posttestserver.com/post.php";
 
 Meteor.methods({
 
@@ -49,6 +50,7 @@ Meteor.methods({
             returnObj["response"] = response;
         }
 
+        console.log(chalk.green.bold(s), returnObj);
         return returnObj;
     },
     test_post : function(postVars) {
@@ -57,7 +59,7 @@ Meteor.methods({
 
         this.unblock();
 
-        var serviceUrl = "https://posttestserver.com/post.php";
+        var serviceUrl = post_test_service_url;
         var response;
         try {
             response = HTTP.call("POST", serviceUrl, {
@@ -71,6 +73,7 @@ Meteor.methods({
             };
         }
 
+        console.log(chalk.green.bold(s), response);
         return {
             success : true,
             postVars : postVars,
@@ -124,16 +127,14 @@ Meteor.methods({
         this.unblock();
 
         // TODO api has yet to be released
-        var serviceUrl = bmeg_query_service_url;
+        var serviceUrl = bmeg_query_service_url + "/gaea/signature/gene";
         var response;
         try {
             response = HTTP.call("POST", serviceUrl, {
-                params : {
-                    geneList : JSON.stringify(geneList)
-                }
+                content : JSON.stringify(geneList)
             });
         } catch (error) {
-            console.log(chalk.red.bold(s), "HTTP.call error message:", error.message);
+            console.log(chalk.red.bold(s), serviceUrl, "HTTP.call error message:", error.message);
             success = false;
             return {
                 success : false,
@@ -186,15 +187,15 @@ Meteor.methods({
         this.unblock();
 
         // TODO api has yet to be released
-        var serviceUrl = bmeg_query_service_url;
+        var serviceUrl = bmeg_query_service_url + "/gaea/signature/sample";
         var response;
         try {
             response = HTTP.call("POST", serviceUrl, {
-                params : {
-                    signatureMetadata : JSON.stringify(signatureMetadataList),
-                    expressionMetadata : JSON.stringify(expressionMetadataList),
-                    clinicalEventMetadata : JSON.stringify(clinicalMetadataList)
-                }
+                content : JSON.stringify({
+                    signatureMetadata : signatureMetadataList,
+                    expressionMetadata : expressionMetadataList,
+                    clinicalEventMetadata : clinicalMetadataList
+                })
             });
         } catch (error) {
             console.log(chalk.red.bold(s), "HTTP.call error message:", error.message);
