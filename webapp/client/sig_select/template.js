@@ -15,40 +15,39 @@ var validateInput = function(inputSigs) {
 
 var renderSigResultsDataTable = function(dataObjs) {
 
-    var columnObjs = [];
-    var colNameSet = new Set();
+    var processedDataObjs = [];
+
     _.each(dataObjs, function(dataObj) {
-        var keys = _.keys(dataObj);
-        _.each(keys, function(key) {
-            colNameSet.add(key);
+        var signatureMetadata = dataObj["signatureMetadata"];
+        var score = dataObj["score"];
+        var name = signatureMetadata["eventID"];
+        processedDataObjs.push({
+            name : name,
+            score : score
         });
     });
 
-    _.each(Array.from(colNameSet), function(colName) {
-        columnObjs.push({
-            data : colName,
-            title : colName.toUpperCase(),
-        });
-    });
+    console.log("processedDataObjs", processedDataObjs);
 
-    // console.log("colNameSet", colNameSet);
-    // console.log("columnObjs", columnObjs);
+    var columnObjs = [{
+        data : "name",
+        title : "NAME"
+    }, {
+        data : "score",
+        title : "SCORE"
+    }];
 
     // default column to sort
-    var sortColIndex = _.pluck(columnObjs, "data").indexOf("score");
-    var orderObj;
-    if (sortColIndex) {
-        orderObj = [[sortColIndex, "desc"]];
-    }
+    var orderObj = [[1, "desc"]];
 
     var sigResultsDataTableObj = $('#sigResultsTable').DataTable({
         // supposed to make this object retrievable by ID
-        bRetrieve : true,
+        // bRetrieve : true,
         // turn on select extension
         select : true,
-        data : dataObjs,
+        data : processedDataObjs,
         columns : columnObjs,
-        order : orderObj
+        // order : orderObj
     });
 
     // set selected sigs rows
@@ -135,7 +134,7 @@ Template.sigSelectTemplate.onRendered(function() {
         console.log("result", result);
 
         if (result.success) {
-            var data = result["data"];
+            var data = result["data"]["data"];
             var query = result["query"];
 
             displaySignatures(data);
@@ -148,8 +147,8 @@ Template.sigSelectTemplate.onRendered(function() {
     };
 
     // get data via the Meteor.method
-    Meteor.call("get_hard_coded_sigs", geneList, show_signature_results);
-    // Meteor.call("post_sigs_for_genes", geneList, show_signature_results);
+    // Meteor.call("get_hard_coded_sigs", geneList, show_signature_results);
+    Meteor.call("post_sigs_for_genes", geneList, show_signature_results);
 });
 
 Template.sigSelectTemplate.onDestroyed(function() {
