@@ -61,6 +61,16 @@ Template.geneSetsTemplate.onCreated(function() {
 Template.geneSetsTemplate.onRendered(function() {
     console.log("Template.geneSetsTemplate.onRendered");
 
+    // fill-in value from Session
+    var geneList = Session.get("geneList");
+    if (!_.isNull(geneList)) {
+        var value = "";
+        _.each(geneList, function(gene) {
+            value = value + gene + " ";
+        });
+        document.getElementById("geneSetTextBox").value = value;
+    }
+
     // handle tab keydown events in textareas
     _.each(document.querySelectorAll("textarea, input[type=text]"), function(elem) {
         elem.addEventListener("keydown", function(e) {
