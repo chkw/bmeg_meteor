@@ -10,6 +10,10 @@ var validateInput = function(inputSigs) {
     if (inputSigs.length < 1) {
         return false;
     }
+
+    if (inputSigs.length != 1) {
+        return false;
+    }
     return true;
 };
 
@@ -47,7 +51,7 @@ var renderSigResultsDataTable = function(dataObjs) {
         select : true,
         data : processedDataObjs,
         columns : columnObjs,
-        // order : orderObj
+        order : orderObj
     });
 
     // set selected sigs rows
@@ -103,7 +107,8 @@ Template.sigSelectTemplate.events({
         if (validateInput(selectedSigs)) {
             FlowRouter.go("obs_deck");
         } else {
-            alert("Please select at least one row.");
+            // alert("Please select at least one row.");
+            alert("Please select exactly one row.");
         }
 
     }
@@ -147,7 +152,6 @@ Template.sigSelectTemplate.onRendered(function() {
     };
 
     // get data via the Meteor.method
-    // Meteor.call("get_hard_coded_sigs", geneList, show_signature_results);
     Meteor.call("post_sigs_for_genes", geneList, show_signature_results);
 });
 
