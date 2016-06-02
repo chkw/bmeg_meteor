@@ -25,26 +25,28 @@ Template.obsDeckTemplate.onRendered(function() {
 
         if (result.success) {
             console.log("got some data. let's build an obs-deck!");
-            var data = result["data"];
+            var data = result["data"]["data"];
 
             // TODO parse the result for the event data by type
-            var eventsGroupedByType = {};
-            var eventDataList = result["eventDataList"];
-            _.each(eventDataList, function(eventData) {
-                var metadata = eventData["metadata"];
-                var sampleData = eventData["sampleData"];
-
-                var datatype = metadata["datatype"];
-                if (! _.contains(_.keys(eventsGroupedByType))) {
-                    eventsGroupedByType[datatype] = [];
-                }
-
-                eventsGroupedByType[datatype].push(eventData);
-
-            });
+            // var eventsGroupedByType = {};
+            // var eventDataList = data;
+            // _.each(eventDataList, function(eventData) {
+            // var metadata = eventData["metadata"];
+            // var sampleData = eventData["sampleData"];
+            //
+            // var datatype = metadata["eventType"];
+            // if (! _.contains(_.keys(eventsGroupedByType))) {
+            // eventsGroupedByType[datatype] = [];
+            // }
+            //
+            // eventsGroupedByType[datatype].push(eventData);
+            //
+            // });
+            //
+            // console.log("eventsGroupedByType", eventsGroupedByType);
 
             var od_config = {
-                mongoData : data
+                bmeg : data
             };
 
             observation_deck.buildObservationDeck(divElem, od_config);
@@ -76,6 +78,6 @@ Template.obsDeckTemplate.onRendered(function() {
 
     // get data via the Meteor.method
     // Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
-    Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["tissue_type"], buildObsDeckWithData);
+    Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["submittedTumorSite"], buildObsDeckWithData);
 
 });

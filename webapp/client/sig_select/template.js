@@ -11,9 +11,9 @@ var validateInput = function(inputSigs) {
         return false;
     }
 
-    if (inputSigs.length != 1) {
-        return false;
-    }
+    // if (inputSigs.length != 1) {
+    // return false;
+    // }
     return true;
 };
 
@@ -107,8 +107,8 @@ Template.sigSelectTemplate.events({
         if (validateInput(selectedSigs)) {
             FlowRouter.go("obs_deck");
         } else {
-            // alert("Please select at least one row.");
-            alert("Please select exactly one row.");
+            alert("Please select at least one row.");
+            // alert("Please select exactly one row.");
         }
 
     }
