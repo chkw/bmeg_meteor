@@ -126,7 +126,6 @@ Meteor.methods({
 
         this.unblock();
 
-        // TODO api has yet to be released
         var serviceUrl = bmeg_query_service_url + "/gaea/signature/gene";
         var response;
         try {
@@ -151,7 +150,7 @@ Meteor.methods({
     },
     post_obs_deck_data_for_sigList : function(sigNames, geneList, clinicalEvents) {
         var s = "method:post_obs_deck_data_for_sigList";
-        console.log(s, sigNames);
+        console.log(s, sigNames, geneList, clinicalEvents);
 
         if (_.isUndefined(sigNames) || _.isNull(sigNames) || sigNames.length < 1) {
             return {
@@ -164,7 +163,7 @@ Meteor.methods({
         _.each(sigNames, function(sigName) {
             signatureMetadataList.push({
                 eventID : sigName,
-                datatype : "signature"
+                datatype : "drug sensitivity signature"
             });
         });
 
@@ -172,7 +171,7 @@ Meteor.methods({
         _.each(geneList, function(geneName) {
             expressionMetadataList.push({
                 eventID : geneName,
-                datatype : "expression"
+                datatype : "mrna_expression"
             });
         });
 
@@ -184,31 +183,32 @@ Meteor.methods({
             });
         });
 
+        var content = {
+            signatureMetadata : signatureMetadataList,
+            expressionMetadata : expressionMetadataList,
+            clinicalEventMetadata : clinicalMetadataList
+        };
+
         this.unblock();
 
-        // TODO api has yet to be released
         var serviceUrl = bmeg_query_service_url + "/gaea/signature/sample";
         var response;
         try {
             response = HTTP.call("POST", serviceUrl, {
-                content : JSON.stringify({
-                    signatureMetadata : signatureMetadataList,
-                    expressionMetadata : expressionMetadataList,
-                    clinicalEventMetadata : clinicalMetadataList
-                })
+                content : JSON.stringify(content)
             });
         } catch (error) {
-            console.log(chalk.red.bold(s), "HTTP.call error message:", error.message);
+            console.log(chalk.red.bold(s), serviceUrl, "HTTP.call error message:", error.message);
             return {
                 success : false,
-                query : [sigNames, geneList, clinicalEvents]
+                query : content
             };
         }
 
         var obsDeckData = response;
         return {
             success : true,
-            query : [sigNames, geneList, clinicalEvents],
+            query : content,
             data : obsDeckData
         };
     }
