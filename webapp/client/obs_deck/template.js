@@ -27,6 +27,22 @@ Template.obsDeckTemplate.onRendered(function() {
             console.log("got some data. let's build an obs-deck!");
             var data = result["data"];
 
+            // TODO parse the result for the event data by type
+            var eventsGroupedByType = {};
+            var eventDataList = result["eventDataList"];
+            _.each(eventDataList, function(eventData) {
+                var metadata = eventData["metadata"];
+                var sampleData = eventData["sampleData"];
+
+                var datatype = metadata["datatype"];
+                if (! _.contains(_.keys(eventsGroupedByType))) {
+                    eventsGroupedByType[datatype] = [];
+                }
+
+                eventsGroupedByType[datatype].push(eventData);
+
+            });
+
             var od_config = {
                 mongoData : data
             };
@@ -52,10 +68,14 @@ Template.obsDeckTemplate.onRendered(function() {
     console.log("sessionGeneList", sessionGeneList);
 
     // update query info
-    document.getElementById("queryP").innerHTML = "getting Observation Deck data for these signatures: " + selectedSigs;
+    var innerHTML = "signatures: " + selectedSigs;
+    innerHTML = innerHTML + "<br>";
+    innerHTML = innerHTML + "genes: " + sessionGeneList;
+
+    document.getElementById("queryP").innerHTML = innerHTML;
 
     // get data via the Meteor.method
-    Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
-    // Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["tissue_type"], buildObsDeckWithData);
+    // Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
+    Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["tissue_type"], buildObsDeckWithData);
 
 });
