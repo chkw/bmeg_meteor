@@ -46,7 +46,22 @@ Template.obsDeckTemplate.onRendered(function() {
             // console.log("eventsGroupedByType", eventsGroupedByType);
 
             var od_config = {
-                bmeg : data
+                bmeg : data,
+                "rowTitleCallback" : function(eventId, config) {
+                    var eventObj = config['eventAlbum'].getEvent(eventId);
+                    var datatype = eventObj.metadata['datatype'];
+                    datatype = datatype.toLowerCase();
+                    console.log(eventId, datatype);
+                    if (datatype === 'expression data') {
+                        // mRNA url:
+                        var gene = eventId.replace('_mRNA', '');
+                        var url = "https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + gene;
+                        window.open(url, "_od_out");
+                    }
+                },
+                "columnTitleCallback" : function(sampleId, config) {
+                    console.log("clicked cell for", sampleId);
+                }
             };
 
             observation_deck.buildObservationDeck(divElem, od_config);
