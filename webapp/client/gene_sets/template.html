@@ -1,11 +1,12 @@
 <template name="geneSetsTemplate">
     <div id='geneSetsTemplateDiv'>
-        This space reserved for gene sets controls.
-        <br>
+        <p>
+            Please type in a query set of genes. We'll look in the BMEG database for drug sensitivity models that have heavy weights for the submitted genes.
+        </p>
         <input id="geneSetTextBox" type="text" placeholder="white space separated gene set" size=30>
         <br>
         <button id="go_select_sigs">
-            Let's see which signatures have high weights for these genes!
+            Look for signatures for these genes!
         </button>
     </div>
 

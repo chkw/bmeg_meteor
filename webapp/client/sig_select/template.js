@@ -35,10 +35,10 @@ var renderSigResultsDataTable = function(dataObjs) {
 
     var columnObjs = [{
         data : "name",
-        title : "NAME"
+        title : "SIGNATURE NAME"
     }, {
         data : "score",
-        title : "SCORE"
+        title : "QUERY SET SCORE"
     }];
 
     // default column to sort
@@ -133,7 +133,7 @@ Template.sigSelectTemplate.onRendered(function() {
     console.log("geneList", geneList);
 
     // update query info
-    document.getElementById("queryP").innerHTML = "getting signatures that are highly weighted in these genes: " + geneList;
+    document.getElementById("queryP").innerHTML = "query genes: " + geneList;
 
     var show_signature_results = function(error, result) {
         console.log("result", result);

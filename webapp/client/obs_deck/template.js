@@ -85,9 +85,11 @@ Template.obsDeckTemplate.onRendered(function() {
     console.log("sessionGeneList", sessionGeneList);
 
     // update query info
-    var innerHTML = "signatures: " + selectedSigs;
+    var innerHTML = "query genes: " + sessionGeneList;
     innerHTML = innerHTML + "<br>";
-    innerHTML = innerHTML + "genes: " + sessionGeneList;
+    innerHTML = innerHTML + "selected signatures: " + selectedSigs;
+    innerHTML = innerHTML + "<br>";
+    innerHTML = innerHTML + "The displayed sample data includes the expression level of the query gene set as well as some top-weighted genes from the signature.";
 
     document.getElementById("queryP").innerHTML = innerHTML;
 
