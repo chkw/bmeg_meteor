@@ -35,7 +35,13 @@ var renderSigResultsDataTable = function(dataObjs) {
 
     var columnObjs = [{
         data : "name",
-        title : "SIGNATURE NAME"
+        title : "SIGNATURE NAME",
+        render : function(data, type, row) {
+            var prefixRe = /^(.*?)\:/i;
+            var suffixRe = /_median$/i;
+            var displayName = data.replace(prefixRe, "").replace(suffixRe, "");
+            return displayName;
+        }
     }, {
         data : "score",
         title : "QUERY SET SCORE"
