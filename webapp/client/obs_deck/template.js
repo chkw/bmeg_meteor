@@ -1,6 +1,10 @@
 import { Session
 }from'meteor/session';
 
+getSession = function(key) {
+    return Session.get(key);
+};
+
 Template.obsDeckTemplate.events({});
 
 Template.obsDeckTemplate.helpers({});
@@ -61,7 +65,8 @@ Template.obsDeckTemplate.onRendered(function() {
                 },
                 "columnTitleCallback" : function(sampleId, config) {
                     console.log("clicked cell for", sampleId);
-                }
+                },
+                "meteorSession" : Session
             };
 
             observation_deck.buildObservationDeck(divElem, od_config);
