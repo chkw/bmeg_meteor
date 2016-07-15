@@ -1,7 +1,7 @@
 # dockerize the bmeg_meteor webapp
 # docker node version should match the node version of the build
 # run the image with something like:
-# docker run -p 3000:3000 -e ROOT_URL="http://localhost" -e PORT="3000" bmeg/web-portal
+# docker run -p 3000:3000 -e ROOT_URL="http://localhost" -e bmeg_ip="http://bmeg.io" bmeg/web-portal
 
 FROM node:0.10.46
 MAINTAINER chrisw

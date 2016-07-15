@@ -1,4 +1,11 @@
-var bmeg_query_service_url = "http://bmeg.io";
+console.log(chalk.green("meteor_methods"));
+var bmeg_query_service_url;
+if (Meteor.isServer) {
+    console.log("Specify the address for BMEG GAEA by setting the environment variable, bmeg_ip.");
+    bmeg_query_service_url = (_.isUndefined(process.env.bmeg_ip)) ? "http://bmeg.io" : process.env.bmeg_ip;
+}
+console.log(chalk.green("bmeg_query_service_url: " + bmeg_query_service_url));
+
 var post_test_service_url = "https://posttestserver.com/post.php";
 
 Meteor.methods({
@@ -127,6 +134,7 @@ Meteor.methods({
         this.unblock();
 
         var serviceUrl = bmeg_query_service_url + "/gaea/signature/gene";
+        console.log(chalk.green(s), chalk.yellow("serviceUrl: " + serviceUrl), chalk.cyan("content: " + JSON.stringify(geneList)));
         var response;
         try {
             response = HTTP.call("POST", serviceUrl, {
@@ -192,6 +200,7 @@ Meteor.methods({
         this.unblock();
 
         var serviceUrl = bmeg_query_service_url + "/gaea/signature/sample";
+        console.log(chalk.green(s), chalk.yellow("serviceUrl: " + serviceUrl), chalk.cyan("content: " + JSON.stringify(content)));
         var response;
         try {
             response = HTTP.call("POST", serviceUrl, {
