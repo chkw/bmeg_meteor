@@ -47,5 +47,28 @@
         <button id="gene_set">
             Let's specify a gene (set)!
         </button>
+        <H2>Use case 2</H2>
+        <p>
+            Use case for drug sensitivity: Are there genomic correlates associated with sensitivity to a particular drug?
+        </p>
+        <p>
+            <ul>
+                <li>
+                    Apply classifier for drug X to all TCGA samples.
+                </li>
+                <li>
+                    Run KS test on classifier-X scores testing each attribute A. Ask if samples with attribute A are scoring significantly high (or low) compared to the uniform distribution.
+                </li>
+                <li>
+                    For any significant attributes A, introduce the link X-A in the BMEG
+                </li>
+                <li>
+                    We begin by specifying an attribute, a gene from which we can identify 2 groups of samples: those with variants and those without.
+                </li>
+            </ul>
+        </p>
+        <button id="gene_set_2">
+            Let's specify a gene (set)!
+        </button>
     </div>
 </template>

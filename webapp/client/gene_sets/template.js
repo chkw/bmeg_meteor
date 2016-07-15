@@ -16,7 +16,7 @@ var validateInput = function(inputString) {
 };
 
 Template.geneSetsTemplate.events({
-    'click button#go_select_sigs' : function(event, instance) {
+    'click button#submit_gene_set' : function(event, instance) {
 
         var geneSetTextBoxElem = document.getElementById("geneSetTextBox");
         var geneSetString = geneSetTextBoxElem.value;
@@ -45,7 +45,13 @@ Template.geneSetsTemplate.events({
         // delete the key
         delete Session.keys["selectedSigs"];
 
-        FlowRouter.go("sig_select");
+        if (Session.get("use_case") == 2) {
+            console.log("use_case 2");
+            FlowRouter.go("obs_deck");
+        } else {
+            console.log("use_case 1");
+            FlowRouter.go("sig_select");
+        }
     }
 });
 
@@ -60,6 +66,16 @@ Template.geneSetsTemplate.onCreated(function() {
 
 Template.geneSetsTemplate.onRendered(function() {
     console.log("Template.geneSetsTemplate.onRendered");
+
+    var useCase = Session.get("use_case");
+
+    var descPElem = document.getElementById("description");
+
+    if (useCase == 2) {
+        descPElem.innerHTML = "Please type in a query set of genes. We'll look in the BMEG database see if presence of variant call in the submitted genes is linked to predicted drug sensitivity.";
+    } else {
+        descPElem.innerHTML = "Please type in a query set of genes. We'll look in the BMEG database for drug sensitivity models that have heavy weights for the submitted genes.";
+    }
 
     // fill-in value from Session
     var geneList = Session.get("geneList");

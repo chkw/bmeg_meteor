@@ -3,6 +3,11 @@ import { Session
 
 Template.welcomeTemplate.events({
     'click button#gene_set' : function(event, instance) {
+        Session.set("use_case", 1);
+        FlowRouter.go("gene_sets");
+    },
+    'click button#gene_set_2' : function(event, instance) {
+        Session.set("use_case", 2);
         FlowRouter.go("gene_sets");
     }
 });
