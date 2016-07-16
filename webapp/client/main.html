@@ -45,8 +45,10 @@
         {{#breadcrumbItem isActive=(isActiveRoute "gene_sets") href=(pathFor 'gene_sets')}} gene sets
         {{/breadcrumbItem}}
 
+        {{# if (display_sig_select_crumb)}}
         {{#breadcrumbItem isActive=(isActiveRoute "sig_select") href=(pathFor 'sig_select')}} select signatures
         {{/breadcrumbItem}}
+        {{/if}}
 
         {{#breadcrumbItem isActive=(isActiveRoute "obs_deck") href=(pathFor 'obs_deck')}} observation deck
         {{/breadcrumbItem}}

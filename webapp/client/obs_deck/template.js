@@ -31,24 +31,6 @@ Template.obsDeckTemplate.onRendered(function() {
             console.log("got some data. let's build an obs-deck!");
             var data = result["data"]["data"];
 
-            // TODO parse the result for the event data by type
-            // var eventsGroupedByType = {};
-            // var eventDataList = data;
-            // _.each(eventDataList, function(eventData) {
-            // var metadata = eventData["metadata"];
-            // var sampleData = eventData["sampleData"];
-            //
-            // var datatype = metadata["eventType"];
-            // if (! _.contains(_.keys(eventsGroupedByType))) {
-            // eventsGroupedByType[datatype] = [];
-            // }
-            //
-            // eventsGroupedByType[datatype].push(eventData);
-            //
-            // });
-            //
-            // console.log("eventsGroupedByType", eventsGroupedByType);
-
             var od_config = {
                 bmeg : data,
                 "rowTitleCallback" : function(eventId, config) {
@@ -91,15 +73,27 @@ Template.obsDeckTemplate.onRendered(function() {
 
     // update query info
     var innerHTML = "query genes: " + sessionGeneList;
-    innerHTML = innerHTML + "<br>";
-    innerHTML = innerHTML + "selected signatures: " + selectedSigs;
-    innerHTML = innerHTML + "<br>";
-    innerHTML = innerHTML + "The displayed sample data includes the expression level of the query gene set as well as some top-weighted genes from the signature.";
+
+    var use_case = Session.get("use_case");
+    if (use_case == 2) {
+        innerHTML = innerHTML + "<br>";
+        innerHTML = innerHTML + "The displayed sample data includes expression and mutation data in the specified genes as well as any drug sensitivity signatures where the scores differ by KS test for sample group with variant compared to sample group without variant.";
+    } else {
+        innerHTML = innerHTML + "<br>";
+        innerHTML = innerHTML + "selected signatures: " + selectedSigs;
+        innerHTML = innerHTML + "<br>";
+        innerHTML = innerHTML + "The displayed sample data includes the expression level of the query gene set as well as some top-weighted genes from the signature.";
+    }
 
     document.getElementById("queryP").innerHTML = innerHTML;
 
     // get data via the Meteor.method
-    // Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
-    Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["submittedTumorSite"], buildObsDeckWithData);
+    if (use_case == 2) {
+        console.log("use_case 2");
+        Meteor.call("post_obs_deck_use_case_2", sessionGeneList, ["submittedTumorSite"], buildObsDeckWithData);
+    } else {
+        // Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
+        Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["submittedTumorSite"], buildObsDeckWithData);
+    }
 
 });
