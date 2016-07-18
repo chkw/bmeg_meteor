@@ -241,6 +241,14 @@ Meteor.methods({
             });
         });
 
+        var copyNumberMetadataList = [];
+        _.each(geneList, function(geneName) {
+            copyNumberMetadataList.push({
+                eventID : geneName,
+                datatype : "copy_number"
+            });
+        });
+
         var clinicalMetadataList = [];
         _.each(clinicalEvents, function(eventName) {
             clinicalMetadataList.push({
