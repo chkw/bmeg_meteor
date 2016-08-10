@@ -17,7 +17,7 @@ var validateInput = function(inputSigs) {
     return true;
 };
 
-var renderSigResultsDataTable = function(dataObjs) {
+var renderSigResultsDataTable_old = function(dataObjs) {
 
     var processedDataObjs = [];
 
@@ -46,6 +46,112 @@ var renderSigResultsDataTable = function(dataObjs) {
         data : "score",
         title : "QUERY SET SCORE"
     }];
+
+    // default column to sort
+    var orderObj = [[1, "desc"]];
+
+    var sigResultsDataTableObj = $('#sigResultsTable').DataTable({
+        // supposed to make this object retrievable by ID
+        // bRetrieve : true,
+        // turn on select extension
+        select : true,
+        data : processedDataObjs,
+        columns : columnObjs,
+        order : orderObj
+    });
+
+    // set selected sigs rows
+    var selectedSigs = Session.get("selectedSigs");
+
+    if (!_.isUndefined(selectedSigs) && !_.isNull(selectedSigs) && selectedSigs.length > 0) {
+        sigResultsDataTableObj.rows().every(function(rowIdx, tableLoop, rowLoop) {
+            var data = this.data();
+            if (_.contains(selectedSigs, data["name"])) {
+                this.select();
+            }
+        });
+    }
+
+    var setSelectedSigsSession = function() {
+        var selectedData = sigResultsDataTableObj.rows({
+            selected : true
+        }).data().pluck('name');
+
+        var selectedSigs = [];
+        _.each(selectedData, function(sigName) {
+            selectedSigs.push(sigName);
+        });
+
+        Session.set("selectedSigs", selectedSigs);
+    };
+
+    // event handling for (de)select events
+    // https://datatables.net/reference/event/select
+    // https://datatables.net/reference/event/deselect
+    // ... update a session variable, selectedSigs
+
+    sigResultsDataTableObj.on('select', function(e, dt, type, indexes) {
+        if (type === 'row') {
+            setSelectedSigsSession();
+        }
+    });
+
+    sigResultsDataTableObj.on('deselect', function(e, dt, type, indexes) {
+        if (type === 'row') {
+            setSelectedSigsSession();
+        }
+    });
+
+    return sigResultsDataTableObj;
+};
+
+var renderSigResultsDataTable = function(dataObjs) {
+
+    var processedDataObjs = [];
+
+    var useCase = Session.get("use_case");
+
+    _.each(dataObjs, function(dataObj) {
+        var signatureMetadata = dataObj["signatureMetadata"];
+        var score;
+        if (useCase == 2) {
+            score = dataObj["significance"];
+        } else {
+            score = dataObj["score"];
+        }
+        var name = signatureMetadata["eventID"];
+        processedDataObjs.push({
+            name : name,
+            score : score
+        });
+    });
+
+    console.log("processedDataObjs", processedDataObjs);
+
+    var columnObjs = [{
+        data : "name",
+        title : "SIGNATURE NAME",
+        render : function(data, type, row) {
+            var prefixRe = /^(.*?)\:/i;
+            var suffixRe = /_median$/i;
+            var displayName = data.replace(prefixRe, "").replace(suffixRe, "");
+            return displayName;
+        }
+    }];
+
+    // add 2nd column
+    if (useCase == 2) {
+        columnObjs.push({
+            data : "score",
+            title : "KS significance"
+        });
+    } else {
+        // use case 1
+        columnObjs.push({
+            data : "score",
+            title : "QUERY SET SCORE"
+        });
+    }
 
     // default column to sort
     var orderObj = [[1, "desc"]];
@@ -158,7 +264,13 @@ Template.sigSelectTemplate.onRendered(function() {
     };
 
     // get data via the Meteor.method
-    Meteor.call("post_sigs_for_genes", geneList, show_signature_results);
+    if (Session.get("use_case") == 2) {
+        console.log("use case 2");
+        Meteor.call("post_sigs_for_mutations", geneList, show_signature_results);
+    } else {
+        console.log("use case 1");
+        Meteor.call("post_sigs_for_genes", geneList, show_signature_results);
+    }
 });
 
 Template.sigSelectTemplate.onDestroyed(function() {
@@ -172,5 +284,4 @@ var displaySignatures = function(sigData) {
         console.log("loaded datatables.min.js");
         var sigResultsDataTableObj = renderSigResultsDataTable(sigData);
     });
-
 };

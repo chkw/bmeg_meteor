@@ -47,7 +47,7 @@ Template.geneSetsTemplate.events({
 
         if (Session.get("use_case") == 2) {
             console.log("use_case 2");
-            FlowRouter.go("obs_deck");
+            FlowRouter.go("sig_select");
         } else {
             console.log("use_case 1");
             FlowRouter.go("sig_select");
