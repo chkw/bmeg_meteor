@@ -90,7 +90,7 @@ Template.obsDeckTemplate.onRendered(function() {
     // get data via the Meteor.method
     if (use_case == 2) {
         console.log("use_case 2");
-        Meteor.call("post_obs_deck_use_case_2", sessionGeneList, ["submittedTumorSite"], buildObsDeckWithData);
+        Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["submittedTumorSite"], buildObsDeckWithData);
     } else {
         // Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
         Meteor.call("post_obs_deck_data_for_sigList", selectedSigs, sessionGeneList, ["submittedTumorSite"], buildObsDeckWithData);

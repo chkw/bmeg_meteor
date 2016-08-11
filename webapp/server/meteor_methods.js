@@ -215,10 +215,15 @@ Meteor.methods({
         });
 
         var expressionMetadataList = [];
+        var mutationMetadataList = [];
         _.each(geneList, function(geneName) {
             expressionMetadataList.push({
                 eventID : geneName,
                 datatype : "mrna_expression"
+            });
+            mutationMetadataList.push({
+                eventID : geneName,
+                datatype : "mutation call"
             });
         });
 
@@ -233,7 +238,8 @@ Meteor.methods({
         var content = {
             signatureMetadata : signatureMetadataList,
             expressionMetadata : expressionMetadataList,
-            clinicalEventMetadata : clinicalMetadataList
+            clinicalEventMetadata : clinicalMetadataList,
+            mutationEventMetadata : mutationMetadataList
         };
 
         this.unblock();
