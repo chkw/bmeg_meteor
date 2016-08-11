@@ -132,9 +132,14 @@ var renderSigResultsDataTable = function(dataObjs) {
         data : "name",
         title : "SIGNATURE NAME",
         render : function(data, type, row) {
+            // strip off text preceding ":"
             var prefixRe = /^(.*?)\:/i;
+            // strip off trailing "_median"
             var suffixRe = /_median$/i;
             var displayName = data.replace(prefixRe, "").replace(suffixRe, "");
+            // strip off trailing concentration
+            suffixRe = /(_[\d]+)+_mol_mol$/i;
+            displayName = displayName.replace(suffixRe, "");
             return displayName;
         }
     }];
@@ -154,7 +159,12 @@ var renderSigResultsDataTable = function(dataObjs) {
     }
 
     // default column to sort
-    var orderObj = [[1, "desc"]];
+    var orderObj;
+    if (useCase == 2) {
+        orderObj = [[1, "asc"]];
+    } else {
+        orderObj = [[1, "desc"]];
+    }
 
     var sigResultsDataTableObj = $('#sigResultsTable').DataTable({
         // supposed to make this object retrievable by ID
