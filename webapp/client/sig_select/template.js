@@ -254,8 +254,19 @@ Template.sigSelectTemplate.onRendered(function() {
     var geneList = Session.get("geneList");
     console.log("geneList", geneList);
 
+    var description;
+    switch(""+Session.get("use_case")) {
+        case "1":
+            description = "These drug sensitivity models that have heavy weights for the submitted genes.";
+            break;
+        case "2":
+            description = "The presence of variant call in the submitted genes is linked to these predicted drug sensitivities by KS test.";
+            break;
+        default:
+            console.log("default description ??!");
+    }
     // update query info
-    document.getElementById("queryP").innerHTML = "query genes: " + geneList;
+    document.getElementById("queryP").innerHTML = description + "<BR>" + "query genes: " + geneList;
 
     var show_signature_results = function(error, result) {
         console.log("result", result);
