@@ -17,94 +17,6 @@ var validateInput = function(inputSigs) {
     return true;
 };
 
-var renderSigResultsDataTable_old = function(dataObjs) {
-
-    var processedDataObjs = [];
-
-    _.each(dataObjs, function(dataObj) {
-        var signatureMetadata = dataObj["signatureMetadata"];
-        var score = dataObj["score"];
-        var name = signatureMetadata["eventID"];
-        processedDataObjs.push({
-            name : name,
-            score : score
-        });
-    });
-
-    console.log("processedDataObjs", processedDataObjs);
-
-    var columnObjs = [{
-        data : "name",
-        title : "SIGNATURE NAME",
-        render : function(data, type, row) {
-            var prefixRe = /^(.*?)\:/i;
-            var suffixRe = /_median$/i;
-            var displayName = data.replace(prefixRe, "").replace(suffixRe, "");
-            return displayName;
-        }
-    }, {
-        data : "score",
-        title : "QUERY SET SCORE"
-    }];
-
-    // default column to sort
-    var orderObj = [[1, "desc"]];
-
-    var sigResultsDataTableObj = $('#sigResultsTable').DataTable({
-        // supposed to make this object retrievable by ID
-        // bRetrieve : true,
-        // turn on select extension
-        select : true,
-        data : processedDataObjs,
-        columns : columnObjs,
-        order : orderObj
-    });
-
-    // set selected sigs rows
-    var selectedSigs = Session.get("selectedSigs");
-
-    if (!_.isUndefined(selectedSigs) && !_.isNull(selectedSigs) && selectedSigs.length > 0) {
-        sigResultsDataTableObj.rows().every(function(rowIdx, tableLoop, rowLoop) {
-            var data = this.data();
-            if (_.contains(selectedSigs, data["name"])) {
-                this.select();
-            }
-        });
-    }
-
-    var setSelectedSigsSession = function() {
-        var selectedData = sigResultsDataTableObj.rows({
-            selected : true
-        }).data().pluck('name');
-
-        var selectedSigs = [];
-        _.each(selectedData, function(sigName) {
-            selectedSigs.push(sigName);
-        });
-
-        Session.set("selectedSigs", selectedSigs);
-    };
-
-    // event handling for (de)select events
-    // https://datatables.net/reference/event/select
-    // https://datatables.net/reference/event/deselect
-    // ... update a session variable, selectedSigs
-
-    sigResultsDataTableObj.on('select', function(e, dt, type, indexes) {
-        if (type === 'row') {
-            setSelectedSigsSession();
-        }
-    });
-
-    sigResultsDataTableObj.on('deselect', function(e, dt, type, indexes) {
-        if (type === 'row') {
-            setSelectedSigsSession();
-        }
-    });
-
-    return sigResultsDataTableObj;
-};
-
 var renderSigResultsDataTable = function(dataObjs) {
 
     var processedDataObjs = [];
@@ -251,6 +163,9 @@ Template.sigSelectTemplate.onRendered(function() {
     // start throbber
     document.getElementById("throbberImg").style.display = "inline";
 
+    // disable button
+    document.getElementById("go_obs_deck").disabled = true;
+
     var geneList = Session.get("geneList");
     console.log("geneList", geneList);
 
@@ -282,6 +197,9 @@ Template.sigSelectTemplate.onRendered(function() {
         }
         // stop throbber
         document.getElementById("throbberImg").style.display = "none";
+
+        // enable button
+        document.getElementById("go_obs_deck").disabled = false;
     };
 
     // get data via the Meteor.method
