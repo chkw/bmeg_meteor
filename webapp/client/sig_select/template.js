@@ -17,6 +17,18 @@ var validateInput = function(inputSigs) {
     return true;
 };
 
+var getSignatureDisplayName = function(origName) {
+    // strip off text preceding ":"
+    var prefixRe = /^(.*?)\:/i;
+    // strip off trailing "_median"
+    var suffixRe = /_median$/i;
+    var displayName = origName.replace(prefixRe, "").replace(suffixRe, "");
+    // strip off trailing concentration
+    suffixRe = /(_[\d]+)+_mol_mol$/i;
+    displayName = displayName.replace(suffixRe, "");
+    return displayName;
+};
+
 var renderSigResultsDataTable = function(dataObjs) {
 
     var processedDataObjs = [];
@@ -44,14 +56,7 @@ var renderSigResultsDataTable = function(dataObjs) {
         data : "name",
         title : "SIGNATURE NAME",
         render : function(data, type, row) {
-            // strip off text preceding ":"
-            var prefixRe = /^(.*?)\:/i;
-            // strip off trailing "_median"
-            var suffixRe = /_median$/i;
-            var displayName = data.replace(prefixRe, "").replace(suffixRe, "");
-            // strip off trailing concentration
-            suffixRe = /(_[\d]+)+_mol_mol$/i;
-            displayName = displayName.replace(suffixRe, "");
+            displayName = getSignatureDisplayName(data);
             return displayName;
         }
     }];
