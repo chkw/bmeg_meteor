@@ -1,0 +1,16 @@
+<template name="clinicalPieTemplate">
+    <div id='clinicalPieTemplateDiv'>
+        <p id="description">
+            View clinical variable data on a cohort level (all TCGA samples).
+        </p>
+        <select id="select2ClinicalVarNames" style="width:100%"></select>
+        <br>
+        <button id="submitButtonClinicalVarNames">
+            Get clinical data.
+        </button>
+        <hr>
+        <img id="throbberImg" src="images/ajax-loader.gif" alt="throbber image">
+        <div id="clinicalPiesDiv"></div>
+    </div>
+
+</template>
