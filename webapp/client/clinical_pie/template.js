@@ -83,11 +83,11 @@ var startThrobber = function(start) {
     if (start) {
         document.getElementById("throbberImg")
             .style.display = "inline";
-        document.getElementById("go_obs_deck").disabled = true;
+        document.getElementById("submitButtonClinicalVarNames").disabled = true;
     } else {
         document.getElementById("throbberImg")
             .style.display = "none";
-        document.getElementById("go_obs_deck").disabled = false;
+        document.getElementById("submitButtonClinicalVarNames").disabled = false;
     }
 };
 
@@ -123,10 +123,8 @@ Template.clinicalPieTemplate.events({
         };
 
         // get data via the Meteor.method
-        // Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
-        Meteor.call("post_get_event_data", [], [], [
-            "submittedTumorSite"
-        ], buildPies);
+        var clinicalVarNames = Session.get("clinicalVarNames");
+        Meteor.call("post_get_event_data", [], [], clinicalVarNames, buildPies);
     }
 });
 
@@ -143,8 +141,6 @@ Template.clinicalPieTemplate.onRendered(function() {
     document.getElementById("throbberImg")
         .style.display = "inline";
 
-
-
     Meteor.call("test_clinical_var_names", function(error, result) {
         console.log("result", result);
 
@@ -154,8 +150,8 @@ Template.clinicalPieTemplate.onRendered(function() {
             console.log("data", data);
             var clinicalVarNameSelectWidget = setupClinicalVarSelector(data.sort());
 
-            // initial selection
-            clinicalVarNameSelectWidget.val(["sample", "tumor_type"]).trigger("change");
+            var initialSelection = ["sample", "tumor_type"];
+            clinicalVarNameSelectWidget.val(initialSelection).trigger("change");
 
             document.getElementById("throbberImg")
                 .style.display = "none";
