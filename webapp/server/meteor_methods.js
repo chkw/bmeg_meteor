@@ -285,14 +285,14 @@ Meteor.methods({
         };
     },
     test_clinical_var_names: function() {
-        var s = "method:post_sigs_for_mutations";
+        var s = "method:test_clinical_var_names";
         console.log(s, arguments);
         var content = {};
         var clinicalVarNames = test_data.clinicalVarNames;
         return {
             success: true,
             query: content,
-            data: clinicalVarNames
+            data: _.union(clinicalVarNames, ["Adeno", "Histology_Call", "study", "sample", "Small_Cell", "Trichotomy"])
         };
     },
     post_clinical_var_names: function() {
@@ -325,6 +325,51 @@ Meteor.methods({
             success: true,
             query: content,
             data: clinicalVarNames
+        };
+    },
+    test_clinical_data: function(eventIds) {
+        var s = "method:test_clinical_data";
+        console.log(s, arguments);
+        var content = {};
+        var rawClinicalData = test_data.exampleData.mongoData.clinical;
+
+        var clinicalEventDataMap = {};
+
+        _.each(rawClinicalData, function(dataObj) {
+            delete dataObj._id;
+
+            var sampleId = dataObj.sample;
+            delete dataObj.sample;
+
+            _.each(_.keys(dataObj), function(clinicalVarName) {
+                if (!_.contains(eventIds, clinicalVarName)) {
+                    return;
+                }
+                if (!_.contains(_.keys(clinicalEventDataMap), clinicalVarName)) {
+                    clinicalEventDataMap[clinicalVarName] = {
+                        metadata: {
+                            eventId: clinicalVarName,
+                            eventType: "clinical data",
+                            datatype: "CATEGORIC",
+                            FeatureWeights: null,
+                            correlatorScore: null
+                        },
+                        sampleData: []
+                    };
+                }
+
+                clinicalEventDataMap[clinicalVarName].sampleData.push({
+                    sampleId: sampleId,
+                    value: dataObj[clinicalVarName]
+                });
+            });
+
+        });
+
+        return {
+            success: true,
+            query: content,
+            data: _.values(clinicalEventDataMap)
         };
     }
 });

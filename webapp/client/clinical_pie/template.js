@@ -124,7 +124,9 @@ Template.clinicalPieTemplate.events({
 
         // get data via the Meteor.method
         var clinicalVarNames = Session.get("clinicalVarNames");
-        Meteor.call("post_get_event_data", [], [], clinicalVarNames, buildPies);
+        // Meteor.call("post_get_event_data", [], [], clinicalVarNames, buildPies);
+
+        Meteor.call("test_clinical_data", clinicalVarNames, buildPies);
     }
 });
 
