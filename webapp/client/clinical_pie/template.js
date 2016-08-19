@@ -1,183 +1,133 @@
 import {
-  Session
+    Session
 }
 from 'meteor/session';
 
 clinicalVarNameSelectWidget = (typeof clinicalVarNameSelectWidget ===
-  "undefined") ? {} : clinicalVarNameSelectWidget;
+    "undefined") ? {} : clinicalVarNameSelectWidget;
 (function(cvnsw) {
-  "use strict";
+    "use strict";
 
-  /**
-   * Construct markup for displaying suggestion results.
-   * @param {Object} suggestion
-   */
-  var formatSuggestions = function(suggestion) {
-    var markup = [];
+    /**
+     * Setup the select tag as a select2 widget.
+     * @param {Object} cssSelector
+     * @param {Object} options
+     */
+    cvnsw.setupWidget = function(cssSelector, options) {
+        var jqSelection = $(cssSelector);
+        if ("multiple" in options) {
+            jqSelection.attr({
+                multiple: options.multiple
+            });
+        }
+        jqSelection.select2({
+            placeholder: options.placeholder,
+            minimumInputLength: options.minimumInputLength,
+            data: options.data
 
-    markup.push("<div>");
-    // markup.push("id:" + suggestion.id);
-    // markup.push("<br>");
-    // markup.push("text:" + suggestion.text);
-    markup.push(suggestion.id);
-    markup.push("</div>");
+            // let our custom formatter work
+            // suggestion object has fields: "id" and "text"
+            // templateResult: formatSuggestions,
+            // templateSelection: formatSuggestionSelection
+        });
 
-    return markup.join("");
-  };
-
-  /**
-   * ID the selected suggestion.
-   * @param {Object} suggestion
-   */
-  var formatSuggestionSelection = function(suggestion) {
-    return suggestion.id || suggestion.text;
-  };
-
-  /**
-   * Setup the select tag as a select2 widget.
-   * @param {Object} cssSelector
-   * @param {Object} options
-   */
-  cvnsw.setupWidget = function(cssSelector, options) {
-    var jqSelection = $(cssSelector);
-    if ("multiple" in options) {
-      jqSelection.attr({
-        multiple: options.multiple
-      });
-    }
-    jqSelection.select2({
-      placeholder: options.placeholder,
-      minimumInputLength: options.minimumInputLength,
-      ajax: {
-        url: options.url,
-        dataType: 'json',
-        delay: 250,
-        data: function(params) {
-          var term = params.term;
-          return {
-            q: term.toUpperCase(), // search term
-            page: params.page
-          };
-        },
-        processResults: function(data, params) {
-          // parse the results into the format expected by Select2
-          // since we are using custom formatting functions we do not need to
-          // alter the remote JSON data, except to indicate that infinite
-          // scrolling can be used
-          params.page = params.page || 1;
-
-          // TODO: test data
-          data = {
-            "items": [{
-              "id": "MDM1",
-              "text": "MDM1"
-            }, {
-              "id": "MDM2",
-              "text": "MDM2"
-            }, {
-              "id": "MDM4",
-              "text": "MDM4"
-            }]
-          };
-
-          return {
-            results: data.items,
-            pagination: {
-              more: (params.page * 20) < data.total_count
+        jqSelection.on("change", function(e) {
+            if (typeof options.changeEventCallback !==
+                "undefined") {
+                var value = jqSelection.val();
+                options.changeEventCallback(value);
             }
-          };
-        },
-        cache: true
-      },
-      escapeMarkup: function(markup) {
-        return markup;
-      },
+        });
 
-      // let our custom formatter work
-      // suggestion object has fields: "id" and "text"
-      templateResult: formatSuggestions,
-      templateSelection: formatSuggestionSelection
-    });
-
-    jqSelection.on("change", function(e) {
-      if (typeof options.changeEventCallback !== "undefined") {
-        var value = jqSelection.val();
-        options.changeEventCallback(value);
-      }
-    });
-
-  };
+        return jqSelection;
+    };
 
 })(clinicalVarNameSelectWidget);
 
-var setupClinicalVarSelector = function() {
-  var options = {
-    placeholder: "list of genes",
-    // TODO: use correct url here
-    // url: Meteor.absoluteUrl() + "genes",
-    // http://localhost:3000/genes?q=MDM
-    // response looks like this: {"items":[{"id":"MDM1","text":"MDM1"},{"id":"MDM2","text":"MDM2"},{"id":"MDM4","text":"MDM4"}]}
-    url: "https://api.github.com/search/repositories",
-    minimumInputLength: 2,
-    multiple: true,
-    changeEventCallback: function(value) {
-      var sessionVar = "clinicalVarNames";
-      var sessionGeneList = Session.get(sessionVar);
-      sessionGeneList = (_.isUndefined(sessionGeneList)) ? [] :
-        sessionGeneList;
+var setupClinicalVarSelector = function(clinicalVarNames) {
+    var options = {
+        placeholder: "list of clinical variable names",
+        data: clinicalVarNames,
+        // TODO: use correct url here
+        // url: Meteor.absoluteUrl() + "genes",
+        // http://localhost:3000/genes?q=MDM
+        // response looks like this: {"items":[{"id":"MDM1","text":"MDM1"},{"id":"MDM2","text":"MDM2"},{"id":"MDM4","text":"MDM4"}]}
+        // url: "https://api.github.com/search/repositories",
+        minimumInputLength: 0,
+        multiple: true,
+        changeEventCallback: function(value) {
+            var sessionVar = "clinicalVarNames";
+            var sessionClinicalVarNames = Session.get(sessionVar);
+            sessionClinicalVarNames = (_.isUndefined(sessionClinicalVarNames)) ? [] :
+                sessionClinicalVarNames;
 
-      var changes = {
-        added: [],
-        deleted: []
-      };
+            var changes = {
+                added: [],
+                deleted: []
+            };
 
-      changes.added = _.difference(value, sessionGeneList);
-      changes.deleted = _.difference(sessionGeneList, value);
+            changes.added = _.difference(value, sessionClinicalVarNames);
+            changes.deleted = _.difference(sessionClinicalVarNames, value);
 
-      Session.set(sessionVar, value);
+            Session.set(sessionVar, value);
+        },
+    };
+
+    jqSelectWidget = clinicalVarNameSelectWidget.setupWidget("#select2ClinicalVarNames",
+        options);
+
+    return jqSelectWidget;
+};
+
+var startThrobber = function(start) {
+    if (start) {
+        document.getElementById("throbberImg")
+            .style.display = "inline";
+        document.getElementById("go_obs_deck").disabled = true;
+    } else {
+        document.getElementById("throbberImg")
+            .style.display = "none";
+        document.getElementById("go_obs_deck").disabled = false;
     }
-  };
-
-  clinicalVarNameSelectWidget.setupWidget("#select2ClinicalVarNames", options);
 };
 
 Template.clinicalPieTemplate.events({
-  'click button#submitButtonClinicalVarNames': function(event, instance) {
-    console.log("event", "click button#submitButtonClinicalVarNames");
+    'click button#submitButtonClinicalVarNames': function(event,
+        instance) {
+        console.log("event",
+            "click button#submitButtonClinicalVarNames");
 
-    var divElem = document.getElementById("clinicalPiesDiv");
+        var divElem = document.getElementById("clinicalPiesDiv");
 
-    // start throbber
-    document.getElementById("throbberImg")
-      .style.display = "inline";
+        startThrobber(true);
 
-    // callback for getting data
-    var buildPies = function(error, result) {
-      console.log("result", result);
+        // callback for getting data
+        var buildPies = function(error, result) {
+            console.log("result", result);
 
-      if (result.success) {
-        console.log("got some data. let's build some pies!");
-        var data = result.data.data;
+            if (result.success) {
+                console.log(
+                    "got some data. let's build some pies!"
+                );
+                var data = result.data.data;
 
-      } else { // remove child elements of divElem
-        while (divElem.firstChild) {
-          divElem.removeChild(divElem.firstChild);
-        }
-        divElem.innerHTML = 'no data';
-        alert("request failed!");
-      }
+            } else { // remove child elements of divElem
+                while (divElem.firstChild) {
+                    divElem.removeChild(divElem.firstChild);
+                }
+                divElem.innerHTML = 'no data';
+                alert("request failed!");
+            }
 
-      // stop throbber
-      document.getElementById("throbberImg")
-        .style.display = "none";
-    };
+            startThrobber(false);
+        };
 
-    // get data via the Meteor.method
-    // Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
-    Meteor.call("post_get_event_data", [], [], [
-      "submittedTumorSite"
-    ], buildPies);
-  }
+        // get data via the Meteor.method
+        // Meteor.call("get_hard_coded_data", selectedSigs, buildObsDeckWithData);
+        Meteor.call("post_get_event_data", [], [], [
+            "submittedTumorSite"
+        ], buildPies);
+    }
 });
 
 Template.clinicalPieTemplate.helpers({});
@@ -188,10 +138,29 @@ Template.clinicalPieTemplate.helpers({});
 Template.clinicalPieTemplate.onCreated(function() {});
 
 Template.clinicalPieTemplate.onRendered(function() {
-  console.log("Template.clinicalPieTemplate.rendered");
+    console.log("Template.clinicalPieTemplate.rendered");
 
-  document.getElementById("throbberImg")
-    .style.display = "none";
+    document.getElementById("throbberImg")
+        .style.display = "inline";
 
-  setupClinicalVarSelector();
+
+
+    Meteor.call("test_clinical_var_names", function(error, result) {
+        console.log("result", result);
+
+        if (result.success) {
+            console.log("got some data. let's populate select2 widget!");
+            var data = result.data;
+            console.log("data", data);
+            var clinicalVarNameSelectWidget = setupClinicalVarSelector(data.sort());
+
+            // initial selection
+            clinicalVarNameSelectWidget.val(["sample", "tumor_type"]).trigger("change");
+
+            document.getElementById("throbberImg")
+                .style.display = "none";
+        } else {
+            console.log("test_clinical_var_names failed");
+        }
+    });
 });
