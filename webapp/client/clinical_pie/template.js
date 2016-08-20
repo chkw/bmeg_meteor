@@ -150,7 +150,10 @@ Template.clinicalPieTemplate.onRendered(function() {
             console.log("got some data. let's populate select2 widget!");
             var data = result.data;
             console.log("data", data);
-            var clinicalVarNameSelectWidget = setupClinicalVarSelector(data.sort());
+            var sortedData = _.sortBy(data, function(name) {
+                return name.toLowerCase();
+            });
+            var clinicalVarNameSelectWidget = setupClinicalVarSelector(sortedData);
 
             var initialSelection = ["sample", "tumor_type"];
             clinicalVarNameSelectWidget.val(initialSelection).trigger("change");
