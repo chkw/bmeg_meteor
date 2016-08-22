@@ -43,6 +43,7 @@ kadira:blaze-layout@2.3.0
 kadira:flow-router@2.12.1
 launch-screen@1.0.11
 limax:observation-deck@0.0.8
+limax:sample-pie-charts@0.0.2
 livedata@1.0.18
 localstorage@1.0.9
 logging@1.0.12

@@ -339,17 +339,16 @@ Meteor.methods({
             delete dataObj._id;
 
             var sampleId = dataObj.sample;
-            delete dataObj.sample;
 
             _.each(_.keys(dataObj), function(clinicalVarName) {
-                if (!_.contains(eventIds, clinicalVarName)) {
+                if (!_.contains(eventIds, clinicalVarName) || clinicalVarName == "sample") {
                     return;
                 }
                 if (!_.contains(_.keys(clinicalEventDataMap), clinicalVarName)) {
                     clinicalEventDataMap[clinicalVarName] = {
                         metadata: {
-                            eventId: clinicalVarName,
-                            eventType: "clinical data",
+                            eventID: clinicalVarName,
+                            eventType: "clinical",
                             datatype: "CATEGORIC",
                             FeatureWeights: null,
                             correlatorScore: null
@@ -359,7 +358,7 @@ Meteor.methods({
                 }
 
                 clinicalEventDataMap[clinicalVarName].sampleData.push({
-                    sampleId: sampleId,
+                    sampleID: sampleId,
                     value: dataObj[clinicalVarName]
                 });
             });

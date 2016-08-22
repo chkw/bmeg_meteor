@@ -79,6 +79,12 @@ var setupClinicalVarSelector = function(clinicalVarNames) {
     return jqSelectWidget;
 };
 
+var bakePies = function(piePanDivElem, pieData) {
+    pie_charts(piePanDivElem, {
+        'bmeg': pieData
+    });
+};
+
 var startThrobber = function(start) {
     if (start) {
         document.getElementById("throbberImg")
@@ -109,7 +115,9 @@ Template.clinicalPieTemplate.events({
                 console.log(
                     "got some data. let's build some pies!"
                 );
-                var data = result.data.data;
+                var data = result.data;
+                console.log("data", data);
+                bakePies(divElem, data);
 
             } else { // remove child elements of divElem
                 while (divElem.firstChild) {
