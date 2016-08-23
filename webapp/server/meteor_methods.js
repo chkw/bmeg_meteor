@@ -303,14 +303,11 @@ Meteor.methods({
         this.unblock();
 
         // TODO need to use correct facet address
-        var serviceUrl = bmeg_query_service_url + "/gaea/signature/sample";
-        console.log(chalk.green(s), chalk.yellow("serviceUrl: " + serviceUrl),
-            chalk.cyan("content: " + JSON.stringify(content)));
+        var serviceUrl = bmeg_query_service_url + "/gaea/individual/attributes";
+        console.log(chalk.green(s), chalk.yellow("serviceUrl: " + serviceUrl));
         var response;
         try {
-            response = HTTP.call("POST", serviceUrl, {
-                content: {}
-            });
+            response = HTTP.call("GET", serviceUrl);
         } catch (error) {
             console.log(chalk.red.bold(s), serviceUrl,
                 "HTTP.call error message:", error.message);
@@ -323,8 +320,40 @@ Meteor.methods({
         var clinicalVarNames = response;
         return {
             success: true,
-            query: content,
             data: clinicalVarNames
+        };
+    },
+    post_clinical_data: function(clinicalVarNames) {
+        // bmeg.io/gaea/individual/values
+
+        var s = "method:post_clinical_data";
+        console.log(s, arguments);
+
+        this.unblock();
+
+        var content = clinicalVarNames;
+        var serviceUrl = bmeg_query_service_url + "/gaea/individual/values";
+        console.log(chalk.green(s), chalk.yellow("serviceUrl: " + serviceUrl),
+            chalk.cyan("content: " + JSON.stringify(content)));
+        var response;
+        try {
+            response = HTTP.call("POST", serviceUrl, {
+                content: JSON.stringify(clinicalVarNames)
+            });
+        } catch (error) {
+            console.log(chalk.red.bold(s), serviceUrl,
+                "HTTP.call error message:", error.message);
+            return {
+                success: false,
+                query: content
+            };
+        }
+
+        var clinicalEventData = response;
+        return {
+            success: true,
+            query: content,
+            data: clinicalEventData
         };
     },
     test_clinical_data: function(eventIds) {

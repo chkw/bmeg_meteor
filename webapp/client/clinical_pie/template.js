@@ -115,7 +115,7 @@ Template.clinicalPieTemplate.events({
                 console.log(
                     "got some data. let's build some pies!"
                 );
-                var data = result.data;
+                var data = JSON.parse(result.data.content);
                 console.log("data", data);
                 bakePies(divElem, data);
 
@@ -134,7 +134,7 @@ Template.clinicalPieTemplate.events({
         var clinicalVarNames = Session.get("clinicalVarNames");
         // Meteor.call("post_get_event_data", [], [], clinicalVarNames, buildPies);
 
-        Meteor.call("test_clinical_data", clinicalVarNames, buildPies);
+        Meteor.call("post_clinical_data", clinicalVarNames, buildPies);
     }
 });
 
@@ -151,25 +151,27 @@ Template.clinicalPieTemplate.onRendered(function() {
     document.getElementById("throbberImg")
         .style.display = "inline";
 
-    Meteor.call("test_clinical_var_names", function(error, result) {
+    // Meteor.call("test_clinical_var_names", function(error, result) {
+    Meteor.call("post_clinical_var_names", function(error, result) {
         console.log("result", result);
 
         if (result.success) {
             console.log("got some data. let's populate select2 widget!");
-            var data = result.data;
-            console.log("data", data);
+            var data = JSON.parse(result.data.content);
+            console.log("clinical var names", data.length);
             var sortedData = _.sortBy(data, function(name) {
                 return name.toLowerCase();
             });
             var clinicalVarNameSelectWidget = setupClinicalVarSelector(sortedData);
 
-            var initialSelection = ["sample", "tumor_type"];
+            // var initialSelection = ["sample", "tumor_type"];
+            var initialSelection = ["submittedTumorSite"];
             clinicalVarNameSelectWidget.val(initialSelection).trigger("change");
 
             document.getElementById("throbberImg")
                 .style.display = "none";
         } else {
-            console.log("test_clinical_var_names failed");
+            console.log("post_clinical_var_names failed");
         }
     });
 });
