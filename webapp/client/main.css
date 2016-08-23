@@ -1,1 +1,12 @@
 /* CSS declarations go here */
+
+.pieChartContainer {
+    width: 33%;
+    float: left;
+}
+.pieChart {
+    height: 350px
+}
+#chartCrumbs {
+    vertical-align: bottom
+}
