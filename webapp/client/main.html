@@ -9,6 +9,14 @@
         {{#breadcrumbItem isActive=false href=(pathFor 'welcome')}} BMEG web portal
         {{/breadcrumbItem}}
 
+        {{# if (isActiveRoute "clinicalPie")}}
+        {{#breadcrumbItem isActive=(isActiveRoute "welcome") href=(pathFor 'welcome')}} welcome
+        {{/breadcrumbItem}}
+
+        {{#breadcrumbItem isActive=(isActiveRoute "clinicalPie") href=(pathFor 'clinicalPie')}} clinical pies
+        {{/breadcrumbItem}}
+        {{/if}}
+
         {{# if (isActiveRoute "root")}}
         {{#breadcrumbItem isActive=(isActiveRoute "root") href=(pathFor 'welcome')}} welcome
         {{/breadcrumbItem}}
