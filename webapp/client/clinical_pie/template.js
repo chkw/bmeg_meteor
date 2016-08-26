@@ -134,7 +134,7 @@ Template.clinicalPieTemplate.events({
         var clinicalVarNames = Session.get("clinicalVarNames");
         // Meteor.call("post_get_event_data", [], [], clinicalVarNames, buildPies);
 
-        Meteor.call("post_clinical_data", clinicalVarNames, buildPies);
+        Meteor.call("query_clinical_data", clinicalVarNames, buildPies);
     }
 });
 
@@ -152,7 +152,7 @@ Template.clinicalPieTemplate.onRendered(function() {
         .style.display = "inline";
 
     // Meteor.call("test_clinical_var_names", function(error, result) {
-    Meteor.call("post_clinical_var_names", function(error, result) {
+    Meteor.call("query_clinical_var_names", function(error, result) {
         console.log("result", result);
 
         if (result.success) {
