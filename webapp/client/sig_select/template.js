@@ -2,6 +2,16 @@ import {
     Session
 } from 'meteor/session';
 
+var stringifiedWikipediaLink = function(article_title) {
+    var s = "<a href='https://en.wikipedia.org/wiki/" + article_title + "' target='_" + article_title + "'>" + article_title + "</a>";
+    return s;
+};
+
+var stringifiedGoogleLink = function(search_terms) {
+    var s = "<a href='https://www.google.com/?q=" + search_terms.join("+") + "' target='_blank'>search</a>";
+    return s;
+};
+
 var validateInput = function(inputSigs) {
 
     if (_.isUndefined(inputSigs) || _.isNull(inputSigs)) {
@@ -37,14 +47,14 @@ var renderSigResultsDataTable = function(dataObjs) {
     var useCase = Session.get("use_case");
 
     _.each(dataObjs, function(dataObj) {
-        var signatureMetadata = dataObj["signatureMetadata"];
+        var signatureMetadata = dataObj.signatureMetadata;
         var score;
         if (useCase == 2) {
-            score = dataObj["significance"];
+            score = dataObj.significance;
         } else {
-            score = dataObj["score"];
+            score = dataObj.score;
         }
-        var name = signatureMetadata["eventID"];
+        var name = signatureMetadata.eventID;
         processedDataObjs.push({
             name: name,
             score: score
@@ -56,13 +66,34 @@ var renderSigResultsDataTable = function(dataObjs) {
     var columnObjs = [{
         data: "name",
         title: "SIGNATURE NAME",
+        // render: function(data, type, row) {
+        //     displayName = getSignatureDisplayName(data);
+        //     return displayName;
+        // }
         render: function(data, type, row) {
-            displayName = getSignatureDisplayName(data);
-            return displayName;
+            var displayName = getSignatureDisplayName(data);
+            var links = [];
+            _.each(displayName.split(/_/), function(drugName) {
+                var s = stringifiedWikipediaLink(drugName);
+                links.push(s);
+            });
+            return links.join("_");
         }
     }];
 
-    // add 2nd column
+    // google search column
+    columnObjs.push({
+        data: "name",
+        title: "Google Search",
+        render: function(data, type, row) {
+            var displayName = getSignatureDisplayName(data);
+            var search_terms = _.union(displayName.split(/_/), Session.get("geneList"));
+            var s = stringifiedGoogleLink(search_terms);
+            return s;
+        }
+    });
+
+    // add score column
     if (useCase == 2) {
         columnObjs.push({
             data: "score",
@@ -104,7 +135,7 @@ var renderSigResultsDataTable = function(dataObjs) {
     if (!_.isUndefined(selectedSigs) && !_.isNull(selectedSigs) && selectedSigs.length > 0) {
         sigResultsDataTableObj.rows().every(function(rowIdx, tableLoop, rowLoop) {
             var data = this.data();
-            if (_.contains(selectedSigs, data["name"])) {
+            if (_.contains(selectedSigs, data.name)) {
                 this.select();
             }
         });
@@ -197,8 +228,8 @@ Template.sigSelectTemplate.onRendered(function() {
         console.log("result", result);
 
         if (result.success) {
-            var data = result["data"]["data"];
-            var query = result["query"];
+            var data = result.data.data;
+            var query = result.query;
 
             displaySignatures(data);
 
