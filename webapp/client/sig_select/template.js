@@ -3,12 +3,12 @@ import {
 } from 'meteor/session';
 
 var stringifiedWikipediaLink = function(article_title) {
-    var s = "<a href='https://en.wikipedia.org/wiki/" + article_title + "' target='_" + article_title + "'>" + article_title + "</a>";
+    var s = "<a title='" + article_title + "' href='https://en.wikipedia.org/wiki/" + article_title + "' target='_" + article_title + "'>" + article_title + "</a>";
     return s;
 };
 
 var stringifiedGoogleLink = function(search_terms) {
-    var s = "<a href='https://www.google.com/?q=" + search_terms.join("+") + "' target='_blank'>search</a>";
+    var s = "<a title='search google' href='https://www.google.com/?q=" + search_terms.join("+") + "' target='_blank'>search</a>";
     return s;
 };
 
