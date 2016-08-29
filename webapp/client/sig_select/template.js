@@ -12,6 +12,11 @@ var stringifiedGoogleLink = function(search_terms) {
     return s;
 };
 
+var stringifiedGenecardsLink = function(geneID) {
+    var s = "<a title='search genecards' href='https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + geneID + "' target='_blank'>" + geneID + "</a>";
+    return s;
+};
+
 var validateInput = function(inputSigs) {
 
     if (_.isUndefined(inputSigs) || _.isNull(inputSigs)) {
@@ -111,11 +116,11 @@ var renderSigResultsDataTable = function(dataObjs) {
     var orderObj;
     if (useCase == 2) {
         orderObj = [
-            [1, "asc"]
+            [2, "asc"]
         ];
     } else {
         orderObj = [
-            [1, "desc"]
+            [2, "desc"]
         ];
     }
 
@@ -222,7 +227,11 @@ Template.sigSelectTemplate.onRendered(function() {
             console.log("default description ??!");
     }
     // update query info
-    document.getElementById("queryP").innerHTML = description + "<BR>" + "query genes: " + geneList;
+    var geneCardLinks = [];
+    _.each(geneList, function(geneID) {
+        geneCardLinks.push(stringifiedGenecardsLink(geneID));
+    });
+    document.getElementById("queryP").innerHTML = description + "<BR>" + "query genes: " + geneCardLinks.join(", ");
 
     var show_signature_results = function(error, result) {
         console.log("result", result);
