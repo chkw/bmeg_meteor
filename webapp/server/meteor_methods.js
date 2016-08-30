@@ -40,6 +40,7 @@ Meteor.methods({
     },
 
     test_get: function(arg1) {
+        var startDate = new Date();
         var s = "method:test_get";
         console.log(s, "query:", arg1);
 
@@ -63,9 +64,12 @@ Meteor.methods({
         }
 
         console.log(chalk.green.bold(s), returnObj);
+        console.log(s, arguments, "took " + (new Date() - startDate) / (1000 * 60) + " minutes");
+
         return returnObj;
     },
     test_post: function(postVars) {
+        var startDate = newDate();
         var s = "method:test_post";
         console.log(s, postVars);
 
@@ -86,6 +90,8 @@ Meteor.methods({
         }
 
         console.log(chalk.green.bold(s), response);
+
+        console.log(s, arguments, "took " + (new Date() - startDate) / (1000 * 60) + " minutes");
         return {
             success: true,
             postVars: postVars,
@@ -131,6 +137,7 @@ Meteor.methods({
     // get signatures in which the query genes have heavy feature weight
     // The differs from 'post_sigs_for_mutations' only by the service url.
     query_sigs_for_genes: function(geneList) {
+        var startDate = new Date();
         var s = "method:query_sigs_for_genes";
         console.log(s, geneList);
         if (_.isUndefined(geneList) || _.isNull(geneList) || geneList.length <
@@ -162,6 +169,7 @@ Meteor.methods({
         }
 
         var sigsData = response;
+        console.log(s, arguments, "took " + (new Date() - startDate) / (1000 * 60) + " minutes");
         return {
             success: true,
             query: geneList,
@@ -171,6 +179,7 @@ Meteor.methods({
     // get signatures with differential signature scores between non-mutated and mutated sample groups
     // The differs from 'post_sigs_for_genes' only by the service url.
     query_sigs_for_mutations: function(geneList) {
+        var startDate = new Date();
         var s = "method:query_sigs_for_mutations";
         console.log(s, geneList);
         if (_.isUndefined(geneList) || _.isNull(geneList) || geneList.length <
@@ -202,6 +211,7 @@ Meteor.methods({
         }
 
         var sigsData = response;
+        console.log(s, arguments, "took " + (new Date() - startDate) / (1000 * 60) + " minutes");
         return {
             success: true,
             query: geneList,
@@ -210,6 +220,7 @@ Meteor.methods({
     },
     query_get_event_data: function(sigNames, geneList,
         clinicalEvents) {
+        var startDate = new Date();
         var s = "method:query_obs_deck_data_for_sigList";
         console.log(s, sigNames, geneList, clinicalEvents);
 
@@ -277,6 +288,8 @@ Meteor.methods({
         }
 
         var eventData = response;
+
+        console.log(s, arguments, "took " + (new Date() - startDate) / (1000 * 60) + " minutes");
         return {
             success: true,
             query: content,
@@ -296,6 +309,7 @@ Meteor.methods({
     },
     query_clinical_var_names: function() {
         // get available clinical variable names
+        var startDate = new Date();
         var s = "method:query_clinical_var_names";
         console.log(s, arguments);
 
@@ -310,12 +324,13 @@ Meteor.methods({
             console.log(chalk.red.bold(s), serviceUrl,
                 "HTTP.call error message:", error.message);
             return {
-                success: false,
-                query: content
+                success: false
             };
         }
 
         var clinicalVarNames = response;
+
+        console.log(s, arguments, "took " + (new Date() - startDate) / (1000 * 60) + " minutes");
         return {
             success: true,
             data: clinicalVarNames
@@ -323,7 +338,7 @@ Meteor.methods({
     },
     query_clinical_data: function(clinicalVarNames) {
         // bmeg.io/gaea/individual/values
-
+        var startDate = new Date();
         var s = "method:query_clinical_data";
         console.log(s, arguments);
 
@@ -348,6 +363,8 @@ Meteor.methods({
         }
 
         var clinicalEventData = response;
+
+        console.log(s, arguments, "took " + (new Date() - startDate) / (1000 * 60) + " minutes");
         return {
             success: true,
             query: content,
