@@ -114,13 +114,14 @@ var renderSigResultsDataTable = function(dataObjs) {
 
     // default column to sort
     var orderObj;
+    var lastColIndex = columnObjs.length - 1;
     if (useCase == 2) {
         orderObj = [
-            [2, "asc"]
+            [lastColIndex, "asc"]
         ];
     } else {
         orderObj = [
-            [2, "desc"]
+            [lastColIndex, "desc"]
         ];
     }
 
