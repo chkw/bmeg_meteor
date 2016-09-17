@@ -16,8 +16,10 @@ var createBoxPlot = function(divId, data, chartName) {
     var containerDiv = document.getElementById(divId);
     var boxPlotDiv = document.createElement("div");
     boxPlotDiv.setAttribute("id", chartDivId);
+    // boxPlotDiv.setAttribute("style", "margin: auto; max-width: 100px");
+    boxPlotDiv.setAttribute("style", "height:300px;width: 20%;float: left;");
     containerDiv.appendChild(boxPlotDiv);
-    containerDiv.appendChild(document.createElement("br"));
+    // containerDiv.appendChild(document.createElement("br"));
 
     $(boxPlotDiv).highcharts({
         credits: {
@@ -26,8 +28,7 @@ var createBoxPlot = function(divId, data, chartName) {
         chart: {
             type: 'boxplot',
             events: {
-                load: function() {
-                }
+                load: function() {}
             }
         },
         title: {
