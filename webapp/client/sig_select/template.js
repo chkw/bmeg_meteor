@@ -18,12 +18,20 @@ var createBoxPlot = function(divId, data, chartName) {
     boxPlotDiv.setAttribute("id", chartDivId);
     containerDiv.appendChild(boxPlotDiv);
     containerDiv.appendChild(document.createElement("br"));
+
     $(boxPlotDiv).highcharts({
+        credits: {
+            enabled: false
+        },
         chart: {
-            type: 'boxplot'
+            type: 'boxplot',
+            events: {
+                load: function() {
+                }
+            }
         },
         title: {
-            text: chartName + ' scores by sample group'
+            text: getSignatureDisplayName(chartName) + ' scores by sample group'
         },
         legend: {
             enabled: false
@@ -33,7 +41,7 @@ var createBoxPlot = function(divId, data, chartName) {
         },
         yAxis: {
             title: {
-                text: 'sample score'
+                text: 'signature score'
             }
         },
         plotOptions: {
