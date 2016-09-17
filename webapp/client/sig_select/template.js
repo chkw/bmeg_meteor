@@ -2,6 +2,61 @@ import {
     Session
 } from 'meteor/session';
 
+var removeAllChildren = function(elementId) {
+    var elem = document.getElementById(elementId);
+    while (elem.firstChild) {
+        elem.removeChild(elem.firstChild);
+    }
+    return null;
+};
+
+var createBoxPlot = function(divId, data, chartName) {
+    // TODO: createBoxPlot
+    var chartDivId = chartName.replace(/ /, "_") + "BoxPlot";
+    var containerDiv = document.getElementById(divId);
+    var boxPlotDiv = document.createElement("div");
+    boxPlotDiv.setAttribute("id", chartDivId);
+    containerDiv.appendChild(boxPlotDiv);
+    containerDiv.appendChild(document.createElement("br"));
+    $(boxPlotDiv).highcharts({
+        chart: {
+            type: 'boxplot'
+        },
+        title: {
+            text: chartName + ' scores by sample group'
+        },
+        legend: {
+            enabled: false
+        },
+        xAxis: {
+            categories: ['non-mutated samples', 'mutated samples'],
+        },
+        yAxis: {
+            title: {
+                text: 'sample score'
+            }
+        },
+        plotOptions: {
+            boxplot: {
+                fillColor: 'silver',
+                lineWidth: 2,
+                medianColor: 'blue',
+                medianWidth: 3,
+                stemColor: 'red',
+                stemDashStyle: 'dot',
+                stemWidth: 1,
+                whiskerColor: 'green',
+                whiskerLength: '30%',
+                whiskerWidth: 3
+            }
+        },
+        series: [{
+            name: 'sample scores',
+            data: data
+        }]
+    });
+};
+
 var stringifiedWikipediaLink = function(article_title) {
     var s = "<a title='" + article_title + "' href='https://en.wikipedia.org/wiki/" + article_title + "' target='_" + article_title + "'>" + article_title + "</a>";
     return s;
@@ -45,6 +100,16 @@ var getSignatureDisplayName = function(origName) {
     return displayName;
 };
 
+var processQuartileObj = function(quartileObj) {
+    var precision = 3;
+
+    quartileObj.low = (quartileObj.minimum);
+    quartileObj.q1 = (quartileObj.first);
+    quartileObj.median = (quartileObj.second);
+    quartileObj.q3 = (quartileObj.third);
+    quartileObj.high = (quartileObj.maximum);
+};
+
 var renderSigResultsDataTable = function(dataObjs) {
 
     var processedDataObjs = [];
@@ -56,13 +121,26 @@ var renderSigResultsDataTable = function(dataObjs) {
         var score;
         if (useCase == 2) {
             score = dataObj.significance;
+            score = Number.parseFloat(score).toPrecision(3);
         } else {
             score = dataObj.score;
         }
         var name = signatureMetadata.eventID;
+        var median_shift = "NA";
+        if ((_.isUndefined(dataObj.sampleGroupDetails) || _.isUndefined(dataObj.backgroundGroupDetails))) {
+            console.log("no sample group details");
+        } else {
+            median_shift = (dataObj.sampleGroupDetails.quartiles.second) - (dataObj.backgroundGroupDetails.quartiles.second);
+            median_shift = Number.parseFloat(median_shift).toPrecision(3);
+            processQuartileObj(dataObj.backgroundGroupDetails.quartiles);
+            processQuartileObj(dataObj.sampleGroupDetails.quartiles);
+        }
         processedDataObjs.push({
             name: name,
-            score: score
+            score: score,
+            median_shift: median_shift,
+            backgroundGroupDetails: dataObj.backgroundGroupDetails,
+            sampleGroupDetails: dataObj.sampleGroupDetails
         });
     });
 
@@ -100,6 +178,10 @@ var renderSigResultsDataTable = function(dataObjs) {
 
     // add score column
     if (useCase == 2) {
+        columnObjs.push({
+            data: "median_shift",
+            title: "median shift"
+        });
         columnObjs.push({
             data: "score",
             title: "KS significance"
@@ -150,11 +232,19 @@ var renderSigResultsDataTable = function(dataObjs) {
     var setSelectedSigsSession = function() {
         var selectedData = sigResultsDataTableObj.rows({
             selected: true
-        }).data().pluck('name');
+        }).data();
 
         var selectedSigs = [];
-        _.each(selectedData, function(sigName) {
+        _.each(selectedData.pluck('name'), function(sigName) {
             selectedSigs.push(sigName);
+        });
+
+        console.log("selectedData", selectedData);
+
+        _.each(selectedData, function(dataObj) {
+            console.log("dataObj", dataObj);
+            removeAllChildren("sigBoxPlots");
+            createBoxPlot("sigBoxPlots", [dataObj.backgroundGroupDetails.quartiles, dataObj.sampleGroupDetails.quartiles], dataObj.name);
         });
 
         Session.set("selectedSigs", selectedSigs);
