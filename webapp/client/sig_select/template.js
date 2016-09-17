@@ -125,6 +125,15 @@ var renderSigResultsDataTable = function(dataObjs) {
 
     var useCase = Session.get("use_case");
 
+    if (dataObjs.length > 0) {
+        var s = [];
+        s.push("  /  ");
+        s.push("non-mutated samples: " + dataObjs[0].backgroundGroupDetails.size);
+        s.push("  /  ");
+        s.push("mutated samples: " + dataObjs[0].sampleGroupDetails.size);
+        document.getElementById("queryP").innerHTML = document.getElementById("queryP").innerHTML + s.join("");
+    }
+
     _.each(dataObjs, function(dataObj) {
         var signatureMetadata = dataObj.signatureMetadata;
         var score;
