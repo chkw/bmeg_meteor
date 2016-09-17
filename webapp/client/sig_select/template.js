@@ -144,8 +144,6 @@ var renderSigResultsDataTable = function(dataObjs) {
         });
     });
 
-    console.log("processedDataObjs", processedDataObjs);
-
     var columnObjs = [{
         data: "name",
         title: "SIGNATURE NAME",
@@ -235,15 +233,10 @@ var renderSigResultsDataTable = function(dataObjs) {
         }).data();
 
         var selectedSigs = [];
-        _.each(selectedData.pluck('name'), function(sigName) {
-            selectedSigs.push(sigName);
-        });
 
-        console.log("selectedData", selectedData);
-
+        removeAllChildren("sigBoxPlots");
         _.each(selectedData, function(dataObj) {
-            console.log("dataObj", dataObj);
-            removeAllChildren("sigBoxPlots");
+            selectedSigs.push(dataObj.name);
             createBoxPlot("sigBoxPlots", [dataObj.backgroundGroupDetails.quartiles, dataObj.sampleGroupDetails.quartiles], dataObj.name);
         });
 
