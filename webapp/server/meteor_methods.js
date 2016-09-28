@@ -414,5 +414,34 @@ Meteor.methods({
             query: content,
             data: _.values(clinicalEventDataMap)
         };
+    },
+    query_bmeg_vertex_info: function(vertexId) {
+        // get BMEG vertex info
+        var startDate = new Date();
+        var s = "method:query_bmeg_vertex_info";
+        console.log(s, arguments);
+
+        this.unblock();
+
+        var serviceUrl = bmeg_query_service_url + "/gaea/vertex/find/" + vertexId;
+        console.log(chalk.green(s), chalk.yellow("serviceUrl: " + serviceUrl));
+        var response;
+        try {
+            response = HTTP.call("GET", serviceUrl);
+        } catch (error) {
+            console.log(chalk.red.bold(s), serviceUrl,
+                "HTTP.call error message:", error.message);
+            return {
+                success: false
+            };
+        }
+
+        var vertexInfo = response;
+
+        console.log(s, arguments, "took " + (new Date() - startDate) / (1000 * 60) + " minutes");
+        return {
+            success: true,
+            data: vertexInfo
+        };
     }
 });

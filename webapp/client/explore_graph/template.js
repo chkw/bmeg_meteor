@@ -25,21 +25,33 @@ var stringifiedGenecardsLink = function(geneID) {
     return s;
 };
 
-var validateInput = function(inputString) {
+var getVertexData = function(vertexId) {
+    console.log("vertexId", vertexId);
 
-    if (_.isUndefined(inputString) || _.isNull(inputString)) {
-        return false;
-    }
+    // start throbber
+    document.getElementById("throbberImg").style.display = "inline";
 
-    if (inputString.length < 1) {
-        return false;
-    }
-    return true;
+    // query_bmeg_vertex_info
+    Meteor.call("query_bmeg_vertex_info", vertexId, function(error, result) {
+        console.log("result", result);
+
+        // stop throbber
+        document.getElementById("throbberImg").style.display = "none";
+    });
+
+    return null;
 };
 
-Template.exploreGraphTemplate.events({});
+Template.exploreGraphTemplate.events({
+    'change #exploreTextBox' (event, instance) {
+        var value = event.target.value;
+        getVertexData(value);
+    }
+});
 
-Template.exploreGraphTemplate.helpers({});
+Template.exploreGraphTemplate.helpers({
+
+});
 
 /**
  * lifecycle hooks
@@ -52,7 +64,7 @@ Template.exploreGraphTemplate.onRendered(function() {
     console.log("Template.exploreGraphTemplate.onRendered");
 
     // start throbber
-    document.getElementById("throbberImg").style.display = "inline";
+    document.getElementById("throbberImg").style.display = "none";
 
     // Meteor call !!
     // Meteor.call("query_sigs_for_genes", geneList, show_signature_results);
