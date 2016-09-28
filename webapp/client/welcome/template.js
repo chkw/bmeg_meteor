@@ -14,6 +14,10 @@ Template.welcomeTemplate.events({
     'click button#browse_clinical_pies': function(event, instance) {
         Session.set("use_case", null);
         FlowRouter.go("clinicalPie");
+    },
+    'click button#explore_graph_button': function(event, instance) {
+        Session.set("use_case", null);
+        FlowRouter.go("explore_graph");
     }
 });
 
