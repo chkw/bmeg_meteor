@@ -2,30 +2,8 @@ import {
     Session
 } from 'meteor/session';
 
-var removeAllChildren = function(elementId) {
-    var elem = document.getElementById(elementId);
-    while (elem.firstChild) {
-        elem.removeChild(elem.firstChild);
-    }
-    return null;
-};
 
-var stringifiedWikipediaLink = function(article_title) {
-    var s = "<a title='" + article_title + "' href='https://en.wikipedia.org/wiki/" + article_title + "' target='_" + article_title + "'>" + article_title + "</a>";
-    return s;
-};
-
-var stringifiedGoogleLink = function(search_terms) {
-    var s = "<a title='search google' href='https://www.google.com/?q=" + search_terms.join("+") + "' target='_blank'>search</a>";
-    return s;
-};
-
-var stringifiedGenecardsLink = function(geneID) {
-    var s = "<a title='search genecards' href='https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + geneID + "' target='_blank'>" + geneID + "</a>";
-    return s;
-};
-
-var getVertexData = function(vertexId) {
+var getVertexData = function(vertexId, instance) {
     console.log("vertexId", vertexId);
 
     // start throbber
@@ -34,6 +12,14 @@ var getVertexData = function(vertexId) {
     // query_bmeg_vertex_info
     Meteor.call("query_bmeg_vertex_info", vertexId, function(error, result) {
         console.log("result", result);
+
+        if (result.success) {
+            var data = result.data.data;
+            instance.state.set(data);
+            console.log("instance.state.keys", instance.state.keys);
+        } else {
+            console.log("error with query_bmeg_vertex_info", error);
+        }
 
         // stop throbber
         document.getElementById("throbberImg").style.display = "none";
@@ -45,12 +31,31 @@ var getVertexData = function(vertexId) {
 Template.exploreGraphTemplate.events({
     'change #exploreTextBox' (event, instance) {
         var value = event.target.value;
-        getVertexData(value);
+        getVertexData(value, instance);
     }
 });
 
 Template.exploreGraphTemplate.helpers({
-
+    type() {
+        const instance = Template.instance();
+        return instance.state.get("type");
+    },
+    in () {
+        const instance = Template.instance();
+        return instance.state.get("in");
+    },
+    out() {
+        const instance = Template.instance();
+        return instance.state.get("out");
+    },
+    properties() {
+        const instance = Template.instance();
+        var propertiesObj = instance.state.get("properties");
+        return JSON.stringify(propertiesObj);
+    },
+    vertexName(){
+        return Template.instance().state.get("properties").name;
+    }
 });
 
 /**
@@ -58,6 +63,7 @@ Template.exploreGraphTemplate.helpers({
  */
 Template.exploreGraphTemplate.onCreated(function() {
     console.log("Template.exploreGraphTemplate.onCreated");
+    this.state = new ReactiveDict("exploreGraphReactiveDict");
 });
 
 Template.exploreGraphTemplate.onRendered(function() {
@@ -72,4 +78,5 @@ Template.exploreGraphTemplate.onRendered(function() {
 
 Template.exploreGraphTemplate.onDestroyed(function() {
     console.log("Template.exploreGraphTemplate.onDestroyed");
+    delete this.state;
 });
