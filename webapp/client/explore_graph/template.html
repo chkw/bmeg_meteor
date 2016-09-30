@@ -1,16 +1,61 @@
 <template name="exploreGraphTemplate">
     <div id='exploreGraphTemplateDiv'>
-        <input id="exploreTextBox" type="text" placeholder="vertex ID" size=30>
+        <input id="exploreTextBox" type="text" placeholder="vertex ID, defaults to feature type" size=30>
         <br>
         <img id="throbberImg" src="images/ajax-loader.gif" alt="throbber image">
         <div id="exploreGraphDiv">
-            <h2>{{vertexName}}</h2>
-            <h4>
-                properties
-            </h4>
-            <p>
-                {{properties}}
-            </p>
+            {{#with vertexInfo}}
+                <p>
+                    vertex type:
+                    {{type}}
+                </p>
+            {{/with}}
+            <button id="collapse_button" onClick="$('.propertiesDiv').toggle(200);">
+                PROPERTIES
+            </button>
+            <br>
+            <div class="propertiesDiv">
+                <table class="table">
+                    <tbody>
+                        {{#each vertexProperties}}
+                            <tr>
+                                <td>{{name}}</td>
+                                <td>{{value}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+            <button id="collapse_button" onClick="$('.inEdgesDiv').toggle(200);">
+                "IN" EDGES
+            </button>
+            <br>
+            <div class="inEdgesDiv">
+                {{#each inEdges}}
+                    <h5>{{type}}</h5>
+                    {{#each edges}}
+                        <p>
+                            {{this}}
+                        </p>
+                    {{/each}}
+                {{/each}}
+            </div>
+
+            <button id="collapse_button" onClick="$('.outEdgesDiv').toggle(200);">
+                "OUT" EDGES
+            </button>
+            <br>
+            <div class="outEdgesDiv">
+                {{#each outEdges}}
+                    <h5>{{type}}</h5>
+                    {{#each edges}}
+                        <p>
+                            {{this}}
+                        </p>
+                    {{/each}}
+                {{/each}}
+            </div>
         </div>
     </div>
 </template>

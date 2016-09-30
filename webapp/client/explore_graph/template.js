@@ -2,6 +2,12 @@ import {
     Session
 } from 'meteor/session';
 
+var checkInput = function(input) {
+    if (input.indexOf(":") == -1) {
+        input = "feature:" + input.toUpperCase();
+    }
+    return input;
+};
 
 var getVertexData = function(vertexId, instance) {
     console.log("vertexId", vertexId);
@@ -10,13 +16,12 @@ var getVertexData = function(vertexId, instance) {
     document.getElementById("throbberImg").style.display = "inline";
 
     // query_bmeg_vertex_info
-    Meteor.call("query_bmeg_vertex_info", vertexId, function(error, result) {
+    Meteor.call("query_bmeg_vertex_info", checkInput(vertexId), function(error, result) {
         console.log("result", result);
 
         if (result.success) {
             var data = result.data.data;
-            instance.state.set(data);
-            console.log("instance.state.keys", instance.state.keys);
+            instance.state.set("data", data);
         } else {
             console.log("error with query_bmeg_vertex_info", error);
         }
@@ -36,25 +41,49 @@ Template.exploreGraphTemplate.events({
 });
 
 Template.exploreGraphTemplate.helpers({
-    type() {
-        const instance = Template.instance();
-        return instance.state.get("type");
+    vertexInfo() {
+        var vertexInfo = Template.instance().state.get("data");
+        console.log("vertexInfo", vertexInfo);
+        return vertexInfo;
     },
-    in () {
-        const instance = Template.instance();
-        return instance.state.get("in");
+    vertexProperties() {
+        var result = [];
+        var data = Template.instance().state.get("data").properties;
+        _.each(_.keys(data), function(key) {
+            var value = data[key];
+            result.push({
+                name: key,
+                value: value
+            });
+        });
+        console.log("result", result);
+        return result;
     },
-    out() {
-        const instance = Template.instance();
-        return instance.state.get("out");
+    inEdges() {
+        var result = [];
+        var data = Template.instance().state.get("data").in;
+        _.each(_.keys(data), function(key) {
+            var value = data[key];
+            result.push({
+                type: key,
+                edges: value
+            });
+        });
+        console.log("result", result);
+        return result;
     },
-    properties() {
-        const instance = Template.instance();
-        var propertiesObj = instance.state.get("properties");
-        return JSON.stringify(propertiesObj);
-    },
-    vertexName(){
-        return Template.instance().state.get("properties").name;
+    outEdges() {
+        var result = [];
+        var data = Template.instance().state.get("data").out;
+        _.each(_.keys(data), function(key) {
+            var value = data[key];
+            result.push({
+                type: key,
+                edges: value
+            });
+        });
+        console.log("result", result);
+        return result;
     }
 });
 
