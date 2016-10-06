@@ -196,16 +196,6 @@ var renderSigResultsDataTable = function(dataObjs) {
         }
     });
 
-    // explore_graph
-    columnObjs.push({
-        data: "eventID",
-        title: "explore graph",
-        render: function(data, type, row) {
-            var s = stringifiedExploreGraphLink(data, "explore graph");
-            return s;
-        }
-    });
-
     // google search column
     columnObjs.push({
         data: "name",
