@@ -9,6 +9,11 @@ var checkInput = function(input) {
     return input;
 };
 
+var stringifiedExploreGraphLink = function(nodeID, text) {
+    var s = "<a title='explore_graph' href='/explore_graph/" + encodeURIComponent(nodeID) + "' target='_bmeg_explore'>" + text + "</a>";
+    return s;
+};
+
 var getVertexData = function(vertexId, instance) {
     console.log("vertexId", vertexId);
 
@@ -46,6 +51,17 @@ Template.exploreGraphTemplate.events({
 
         // TODO: Is this the right thing to do?
         window.location.reload();
+    },
+    'click .node_id_text' (event, instance) {
+        var node_id = event.target.innerHTML;
+        console.log("node_id_text node_id", node_id);
+
+        FlowRouter.setParams({
+            node_id: encodeURIComponent(node_id)
+        });
+
+        // TODO: Is this the right thing to do?
+        window.location.reload();
     }
 });
 
@@ -72,38 +88,80 @@ Template.exploreGraphTemplate.helpers({
         console.log("result", result);
         return result;
     },
-    inEdges() {
+    vertexPropertiesTable() {
         var result = [];
+        result.push("<table id='vertexPropertiesTable' class='table'>");
+        result.push("<tbody>");
         var stateData = Template.instance().state.get("data");
         if (_.isUndefined(stateData) || ((_.keys(stateData).length) === 0)) {
-            return result;
+            return "<br>";
         }
-        var data = stateData.in;
+        var data = stateData.properties;
         _.each(_.keys(data), function(key) {
             var value = data[key];
-            result.push({
-                type: key,
-                edges: value
-            });
+            if (key === "coefficients") {
+                value = "gene weights";
+            }
+            result.push("<tr>");
+            result.push("<td>" + key + "</td>");
+            result.push("<td>" + value + "</td>");
+            result.push("</tr>");
         });
-        console.log("result", result);
+        result.push("</tbody>");
+        result.push("</table>");
+        result = result.join("\n");
         return result;
     },
-    outEdges() {
+    inEdgesHTML() {
+        // stringifiedExploreGraphLink = function(nodeID, text)
         var result = [];
         var stateData = Template.instance().state.get("data");
         if (_.isUndefined(stateData) || ((_.keys(stateData).length) === 0)) {
-            return result;
+            return "<br>";
+        }
+        var data = stateData.in;
+        _.each(_.keys(data), function(edgeType) {
+            result.push("<h5>" + edgeType + "</h5>");
+            var targetNodes = data[edgeType];
+            _.each(targetNodes, function(node_id) {
+                var isNodeId = node_id.indexOf(":");
+                if (isNodeId != -1) {
+                    // var s = stringifiedExploreGraphLink(node_id, node_id);
+                    result.push("<p class='node_id_text' style='cursor:pointer'>" + node_id + "</p>");
+                } else {
+
+                    result.push("<p>" + node_id + "</p>");
+                }
+            });
+
+        });
+        result = result.join("\n");
+        return result;
+    },
+    outEdgesHTML() {
+        // stringifiedExploreGraphLink = function(nodeID, text)
+        var result = [];
+        var stateData = Template.instance().state.get("data");
+        if (_.isUndefined(stateData) || ((_.keys(stateData).length) === 0)) {
+            return "<br>";
         }
         var data = stateData.out;
-        _.each(_.keys(data), function(key) {
-            var value = data[key];
-            result.push({
-                type: key,
-                edges: value
+        _.each(_.keys(data), function(edgeType) {
+            result.push("<h5>" + edgeType + "</h5>");
+            var targetNodes = data[edgeType];
+            _.each(targetNodes, function(node_id) {
+                var isNodeId = node_id.indexOf(":");
+                if (isNodeId != -1) {
+                    // var s = stringifiedExploreGraphLink(node_id, node_id);
+                    result.push("<p class='node_id_text' style='cursor:pointer'>" + node_id + "</p>");
+                } else {
+
+                    result.push("<p>" + node_id + "</p>");
+                }
             });
+
         });
-        console.log("result", result);
+        result = result.join("\n");
         return result;
     }
 });

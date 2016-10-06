@@ -17,7 +17,12 @@ Template.welcomeTemplate.events({
     },
     'click button#explore_graph_button': function(event, instance) {
         Session.set("use_case", null);
-        FlowRouter.go("explore_graph");
+        // FlowRouter.go("explore_graph/feature:TP53");
+
+        FlowRouter.go("explore_graph_node_id", {
+            node_id: "feature:TP53"
+        }, {});
+
     }
 });
 
