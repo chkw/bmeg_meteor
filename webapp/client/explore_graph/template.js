@@ -48,7 +48,11 @@ Template.exploreGraphTemplate.helpers({
     },
     vertexProperties() {
         var result = [];
-        var data = Template.instance().state.get("data").properties;
+        var stateData = Template.instance().state.get("data");
+        if (_.isUndefined(stateData)){
+            return result;
+        }
+        var data = stateData.properties;
         _.each(_.keys(data), function(key) {
             var value = data[key];
             result.push({
@@ -60,8 +64,11 @@ Template.exploreGraphTemplate.helpers({
         return result;
     },
     inEdges() {
-        var result = [];
-        var data = Template.instance().state.get("data").in;
+        var result = [];var stateData = Template.instance().state.get("data");
+        if (_.isUndefined(stateData)){
+            return result;
+        }
+        var data = stateData.in;
         _.each(_.keys(data), function(key) {
             var value = data[key];
             result.push({
@@ -73,8 +80,11 @@ Template.exploreGraphTemplate.helpers({
         return result;
     },
     outEdges() {
-        var result = [];
-        var data = Template.instance().state.get("data").out;
+        var result = [];var stateData = Template.instance().state.get("data");
+        if (_.isUndefined(stateData)){
+            return result;
+        }
+        var data = stateData.out;
         _.each(_.keys(data), function(key) {
             var value = data[key];
             result.push({
