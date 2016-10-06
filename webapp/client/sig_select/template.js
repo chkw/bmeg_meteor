@@ -81,8 +81,8 @@ var stringifiedGenecardsLink = function(geneID) {
     return s;
 };
 
-var stringifiedExploreGraphLink = function(nodeID) {
-    var s = "<a title='explore_graph' href='/explore_graph/" + encodeURIComponent(nodeID) + "' target='_bmeg_explore'>explore graph</a>";
+var stringifiedExploreGraphLink = function(nodeID, text) {
+    var s = "<a title='explore_graph' href='/explore_graph/" + encodeURIComponent(nodeID) + "' target='_bmeg_explore'>" + text + "</a>";
     return s;
 };
 
@@ -169,12 +169,22 @@ var renderSigResultsDataTable = function(dataObjs) {
     });
 
     var columnObjs = [{
-        data: "name",
+        data: "eventID",
         title: "SIGNATURE NAME",
         // render: function(data, type, row) {
         //     displayName = getSignatureDisplayName(data);
         //     return displayName;
         // }
+        render: function(data, type, row) {
+            var s = stringifiedExploreGraphLink(data, getSignatureDisplayName(data));
+            return s;
+        }
+    }];
+
+    // wikipedia
+    columnObjs.push({
+        data: "name",
+        title: "Wikipedia",
         render: function(data, type, row) {
             var displayName = getSignatureDisplayName(data);
             var links = [];
@@ -182,16 +192,16 @@ var renderSigResultsDataTable = function(dataObjs) {
                 var s = stringifiedWikipediaLink(drugName);
                 links.push(s);
             });
-            return links.join("_");
+            return links.join(", ");
         }
-    }];
+    });
 
     // explore_graph
     columnObjs.push({
         data: "eventID",
         title: "explore graph",
         render: function(data, type, row) {
-            var s = stringifiedExploreGraphLink(data);
+            var s = stringifiedExploreGraphLink(data, "explore graph");
             return s;
         }
     });
@@ -345,11 +355,12 @@ Template.sigSelectTemplate.onRendered(function() {
             console.log("default description ??!");
     }
     // update query info
-    var geneCardLinks = [];
+    var geneLinkOuts = [];
     _.each(geneList, function(geneID) {
-        geneCardLinks.push(stringifiedGenecardsLink(geneID));
+        // geneLinkOuts.push(stringifiedGenecardsLink(geneID));
+        geneLinkOuts.push(stringifiedExploreGraphLink("feature:" + geneID, geneID));
     });
-    document.getElementById("queryP").innerHTML = description + "<BR>" + "query genes: " + geneCardLinks.join(", ");
+    document.getElementById("queryP").innerHTML = description + "<BR>" + "query genes: " + geneLinkOuts.join(", ");
 
     var show_signature_results = function(error, result) {
         console.log("result", result);
