@@ -81,6 +81,11 @@ var stringifiedGenecardsLink = function(geneID) {
     return s;
 };
 
+var stringifiedExploreGraphLink = function(nodeID) {
+    var s = "<a title='explore_graph' href='/explore_graph/" + encodeURIComponent(nodeID) + "' target='_bmeg_explore'>explore graph</a>";
+    return s;
+};
+
 var validateInput = function(inputSigs) {
 
     if (_.isUndefined(inputSigs) || _.isNull(inputSigs)) {
@@ -154,6 +159,7 @@ var renderSigResultsDataTable = function(dataObjs) {
             processQuartileObj(dataObj.sampleGroupDetails.quartiles);
         }
         processedDataObjs.push({
+            eventID: signatureMetadata.eventID,
             name: name,
             score: score,
             median_shift: median_shift,
@@ -179,6 +185,16 @@ var renderSigResultsDataTable = function(dataObjs) {
             return links.join("_");
         }
     }];
+
+    // explore_graph
+    columnObjs.push({
+        data: "eventID",
+        title: "explore graph",
+        render: function(data, type, row) {
+            var s = stringifiedExploreGraphLink(data);
+            return s;
+        }
+    });
 
     // google search column
     columnObjs.push({

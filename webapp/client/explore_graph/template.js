@@ -16,7 +16,7 @@ var getVertexData = function(vertexId, instance) {
     document.getElementById("throbberImg").style.display = "inline";
 
     // query_bmeg_vertex_info
-    Meteor.call("query_bmeg_vertex_info", checkInput(vertexId), function(error, result) {
+    Meteor.call("query_bmeg_vertex_info", vertexId, function(error, result) {
         console.log("result", result);
 
         if (result.success) {
@@ -26,9 +26,10 @@ var getVertexData = function(vertexId, instance) {
             console.log("error with query_bmeg_vertex_info", error);
         }
 
-        // stop throbber
-        document.getElementById("throbberImg").style.display = "none";
     });
+
+    // stop throbber
+    document.getElementById("throbberImg").style.display = "none";
 
     return null;
 };
@@ -36,7 +37,15 @@ var getVertexData = function(vertexId, instance) {
 Template.exploreGraphTemplate.events({
     'change #exploreTextBox' (event, instance) {
         var value = event.target.value;
-        getVertexData(value, instance);
+        var node_id = checkInput(value);
+        console.log("exploreTextBox node_id", node_id);
+
+        FlowRouter.setParams({
+            node_id: encodeURIComponent(node_id)
+        });
+
+        // TODO: Is this the right thing to do?
+        window.location.reload();
     }
 });
 
@@ -49,7 +58,7 @@ Template.exploreGraphTemplate.helpers({
     vertexProperties() {
         var result = [];
         var stateData = Template.instance().state.get("data");
-        if (_.isUndefined(stateData)){
+        if (_.isUndefined(stateData) || ((_.keys(stateData).length) === 0)) {
             return result;
         }
         var data = stateData.properties;
@@ -64,8 +73,9 @@ Template.exploreGraphTemplate.helpers({
         return result;
     },
     inEdges() {
-        var result = [];var stateData = Template.instance().state.get("data");
-        if (_.isUndefined(stateData)){
+        var result = [];
+        var stateData = Template.instance().state.get("data");
+        if (_.isUndefined(stateData) || ((_.keys(stateData).length) === 0)) {
             return result;
         }
         var data = stateData.in;
@@ -80,8 +90,9 @@ Template.exploreGraphTemplate.helpers({
         return result;
     },
     outEdges() {
-        var result = [];var stateData = Template.instance().state.get("data");
-        if (_.isUndefined(stateData)){
+        var result = [];
+        var stateData = Template.instance().state.get("data");
+        if (_.isUndefined(stateData) || ((_.keys(stateData).length) === 0)) {
             return result;
         }
         var data = stateData.out;
@@ -108,11 +119,11 @@ Template.exploreGraphTemplate.onCreated(function() {
 Template.exploreGraphTemplate.onRendered(function() {
     console.log("Template.exploreGraphTemplate.onRendered");
 
-    // start throbber
+    // stop throbber
     document.getElementById("throbberImg").style.display = "none";
 
-    // Meteor call !!
-    // Meteor.call("query_sigs_for_genes", geneList, show_signature_results);
+    var node_id = FlowRouter.getParam("node_id");
+    getVertexData(node_id, Template.instance());
 });
 
 Template.exploreGraphTemplate.onDestroyed(function() {

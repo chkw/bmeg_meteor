@@ -79,16 +79,16 @@ FlowRouter.route('/explore_graph', {
         BlazeLayout.render("exploreGraphTemplate");
     }
 });
-//
-// FlowRouter.route('/explore_graph/:node_id', {
-//     name: "explore_graph_node_id",
-//     action: function(params, queryParams) {
-//         console.log("routing for /explore_graph/:node_id");
-//         console.log("params", params);
-//         console.log("queryParams", queryParams);
-//         BlazeLayout.render("exploreGraphTemplate");
-//     }
-// });
+
+FlowRouter.route('/explore_graph/:node_id', {
+    name: "explore_graph_node_id",
+    action: function(params, queryParams) {
+        console.log("routing for /explore_graph/:node_id");
+        console.log("params", params);
+        console.log("queryParams", queryParams);
+        BlazeLayout.render("exploreGraphTemplate");
+    }
+});
 
 FlowRouter.notFound = {
     name: "notFound",
