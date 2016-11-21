@@ -2,8 +2,10 @@
 # docker node version should match the node version of the build
 # run the image with something like:
 # docker run -p 3000:3000 -e ROOT_URL="http://localhost" -e bmeg_ip="http://bmeg.io" bmeg/web-portal
+# stop it by getting the image id with `docker ps` and then `docker stop [image id]`
 
-FROM node:0.10.46
+#FROM node:0.10.46
+FROM node:4
 MAINTAINER chrisw
 
 # install Meteor
