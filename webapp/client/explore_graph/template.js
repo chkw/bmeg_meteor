@@ -177,6 +177,10 @@ Template.exploreGraphTemplate.onCreated(function() {
 Template.exploreGraphTemplate.onRendered(function() {
     console.log("Template.exploreGraphTemplate.onRendered");
 
+    // Meteor.absoluteUrl()
+    document.getElementById("baskin_logo").src = Meteor.absoluteUrl("images/baskin-logo-banner.gif");
+    document.getElementById("ohsu_logo").src = Meteor.absoluteUrl("images/ohsu_logo_400x400.jpg");
+
     // stop throbber
     document.getElementById("throbberImg").style.display = "none";
 

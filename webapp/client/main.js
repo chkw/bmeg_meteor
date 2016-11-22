@@ -3,3 +3,6 @@ import { Template
 }from'meteor/reactive-var';import { Session
 }from'meteor/session';import'./main.html';import { Meteor
 }from'meteor/meteor';
+
+console.log("in main.js");
+console.log("Meteor.absoluteUrl() -->", Meteor.absoluteUrl());
