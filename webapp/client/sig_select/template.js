@@ -124,13 +124,22 @@ var processQuartileObj = function(quartileObj) {
     quartileObj.high = (quartileObj.maximum);
 };
 
+/*
+██████  ███████ ███    ██ ██████  ███████ ██████  ███████ ██  ██████  ██████  ███████ ███████ ██    ██ ██   ████████ ███████ ██████   █████  ████████  █████  ████████  █████  ██████  ██      ███████
+██   ██ ██      ████   ██ ██   ██ ██      ██   ██ ██      ██ ██       ██   ██ ██      ██      ██    ██ ██      ██    ██      ██   ██ ██   ██    ██    ██   ██    ██    ██   ██ ██   ██ ██      ██
+██████  █████   ██ ██  ██ ██   ██ █████   ██████  ███████ ██ ██   ███ ██████  █████   ███████ ██    ██ ██      ██    ███████ ██   ██ ███████    ██    ███████    ██    ███████ ██████  ██      █████
+██   ██ ██      ██  ██ ██ ██   ██ ██      ██   ██      ██ ██ ██    ██ ██   ██ ██           ██ ██    ██ ██      ██         ██ ██   ██ ██   ██    ██    ██   ██    ██    ██   ██ ██   ██ ██      ██
+██   ██ ███████ ██   ████ ██████  ███████ ██   ██ ███████ ██  ██████  ██   ██ ███████ ███████  ██████  ███████ ██    ███████ ██████  ██   ██    ██    ██   ██    ██    ██   ██ ██████  ███████ ███████
+*/
+
+
 var renderSigResultsDataTable = function(dataObjs) {
 
     var processedDataObjs = [];
 
     var useCase = Session.get("use_case");
 
-    if (dataObjs.length > 0) {
+    if (useCase == 2 && dataObjs.length > 0) {
         var s = [];
         s.push("  /  ");
         s.push("non-mutated samples: " + dataObjs[0].backgroundGroupDetails.size);
@@ -271,7 +280,9 @@ var renderSigResultsDataTable = function(dataObjs) {
         removeAllChildren("sigBoxPlots");
         _.each(selectedData, function(dataObj) {
             selectedSigs.push(dataObj.name);
-            createBoxPlot("sigBoxPlots", [dataObj.backgroundGroupDetails.quartiles, dataObj.sampleGroupDetails.quartiles], dataObj.name);
+            if (useCase == 2) {
+                createBoxPlot("sigBoxPlots", [dataObj.backgroundGroupDetails.quartiles, dataObj.sampleGroupDetails.quartiles], dataObj.name);
+            }
         });
 
         Session.set("selectedSigs", selectedSigs);
